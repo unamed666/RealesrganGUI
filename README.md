@@ -1,4 +1,4 @@
-# Realesrgan
+# RealesrganGUI
 ### Upscaler image and video with simple user interface
 
 ![Caapture](https://github.com/user-attachments/assets/e82829e7-4bed-4077-9991-346cb977dfc5)
