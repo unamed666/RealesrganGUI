@@ -1,7 +1,6 @@
 # Realesrgan
 Upscaler image and video with simple user interface
 
-![Caapture](https://github.com/user-attachments/assets/d35062ba-2263-4fb9-9735-f32e4d096625)
+![Caapture](https://github.com/user-attachments/assets/e82829e7-4bed-4077-9991-346cb977dfc5)
 
-
-![Capture](https://github.com/user-attachments/assets/272bee23-d1d2-42dc-a38d-d505a65e3a30)
+![Capture](https://github.com/user-attachments/assets/cd93e28c-4d6c-4818-9a20-b92197b0a992)
