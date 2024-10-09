@@ -1,5 +1,5 @@
 <h1 align="center">
-Realesrgan GUI
+Realesrgan GUI For Windows OS
 </h1>
 
 <p align="center">
@@ -12,6 +12,12 @@ Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and 
 
 Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 </h1>
+
+# USAGE
+- Download RealesrganGUI from link above
+- Extract to any folder you want
+- Run Realesrgan.exe
+- Enjoy
 
 # FEATURES
 
