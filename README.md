@@ -3,16 +3,15 @@ Realesrgan GUI
 </h1>
 
 <p align="center">
-  <img  src="https://github.com/user-attachments/assets/d83a0c3a-f626-4333-9e53-7c255a9cf6f9">
+  <img  src="https://github.com/user-attachments/assets/d83a0c3a-f626-4333-9e53-7c255a9cf6f9"> 
 </p>
+<h2 align="center">
+Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features <br><br><br>
+  
+[Download here](https://github.com/eroge69/RealesrganGUI/releases) <br><br>
 
-### Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features
-
-
-## [Download here](https://github.com/eroge69/RealesrganGUI/releases)
-##
-## Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
-
+Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
+</h1>
 # FEATURES
 
 ## IMAGE
