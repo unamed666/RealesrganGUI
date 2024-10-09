@@ -1,6 +1,6 @@
 ﻿namespace Realesrgan
 {
-    partial class Form1
+    partial class gui1
     {
         /// <summary>
         /// Required designer variable.
@@ -29,17 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(gui1));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.label1 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label11 = new System.Windows.Forms.Label();
-            this.numvidY = new System.Windows.Forms.NumericUpDown();
-            this.numvidX = new System.Windows.Forms.NumericUpDown();
+            this.button1 = new System.Windows.Forms.Button();
+            this.txtvidEND = new System.Windows.Forms.TextBox();
             this.txtvidOutname = new System.Windows.Forms.TextBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.radvidFix = new System.Windows.Forms.RadioButton();
-            this.radvidCus = new System.Windows.Forms.RadioButton();
             this.txtvidPath = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.radvidN = new System.Windows.Forms.RadioButton();
@@ -52,22 +47,18 @@
             this.btnvidSubmit = new System.Windows.Forms.Button();
             this.radvidOutloc2 = new System.Windows.Forms.RadioButton();
             this.radvidOutloc1 = new System.Windows.Forms.RadioButton();
-            this.radioButton10 = new System.Windows.Forms.RadioButton();
             this.btnvidOutdir = new System.Windows.Forms.Button();
-            this.lblvidY1 = new System.Windows.Forms.Label();
-            this.lblvidX1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.txtFPS = new System.Windows.Forms.TextBox();
             this.txtvidCus = new System.Windows.Forms.TextBox();
-            this.checkvidCmd = new System.Windows.Forms.CheckBox();
-            this.lblvidY2 = new System.Windows.Forms.Label();
-            this.lblvidX2 = new System.Windows.Forms.Label();
+            this.txtvidLength = new System.Windows.Forms.TextBox();
+            this.checkvidCus = new System.Windows.Forms.CheckBox();
+            this.checkvidFPS = new System.Windows.Forms.CheckBox();
+            this.checkvidLength = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.btnvidFind = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
-            this.btnimgOutdir = new System.Windows.Forms.TabPage();
-            this.label10 = new System.Windows.Forms.Label();
             this.txtimgOutname = new System.Windows.Forms.TextBox();
             this.txtimgPath = new System.Windows.Forms.TextBox();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -80,28 +71,32 @@
             this.btnimgSubmit = new System.Windows.Forms.Button();
             this.radimgOutloc2 = new System.Windows.Forms.RadioButton();
             this.radimgOutloc1 = new System.Windows.Forms.RadioButton();
-            this.radioButton6 = new System.Windows.Forms.RadioButton();
-            this.button9 = new System.Windows.Forms.Button();
+            this.btnimgOutdir = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.checkimgOutname = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btnimgFind = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.label13 = new System.Windows.Forms.Label();
-            this.numFPS = new System.Windows.Forms.NumericUpDown();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numvidY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numvidX)).BeginInit();
-            this.panel3.SuspendLayout();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.checkSound = new System.Windows.Forms.CheckBox();
+            this.panelimg = new System.Windows.Forms.Panel();
+            this.panelvid = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.checkThumb = new System.Windows.Forms.CheckBox();
+            this.btnvidThumb = new System.Windows.Forms.Button();
+            this.btnIMG = new System.Windows.Forms.Button();
+            this.btnVID = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkimg = new System.Windows.Forms.CheckBox();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.btnimgOutdir.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numFPS)).BeginInit();
+            this.panelimg.SuspendLayout();
+            this.panelvid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -112,65 +107,30 @@
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
-            this.label1.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
             this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.CausesValidation = false;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label1.Name = "label1";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // tabPage2
+            // button1
             // 
-            this.tabPage2.BackColor = System.Drawing.Color.Black;
-            resources.ApplyResources(this.tabPage2, "tabPage2");
-            this.tabPage2.Controls.Add(this.label11);
-            this.tabPage2.Controls.Add(this.numFPS);
-            this.tabPage2.Controls.Add(this.numvidY);
-            this.tabPage2.Controls.Add(this.numvidX);
-            this.tabPage2.Controls.Add(this.txtvidOutname);
-            this.tabPage2.Controls.Add(this.panel3);
-            this.tabPage2.Controls.Add(this.txtvidPath);
-            this.tabPage2.Controls.Add(this.panel2);
-            this.tabPage2.Controls.Add(this.panel1);
-            this.tabPage2.Controls.Add(this.checkvidOutname);
-            this.tabPage2.Controls.Add(this.btnvidSubmit);
-            this.tabPage2.Controls.Add(this.radvidOutloc2);
-            this.tabPage2.Controls.Add(this.radvidOutloc1);
-            this.tabPage2.Controls.Add(this.radioButton10);
-            this.tabPage2.Controls.Add(this.btnvidOutdir);
-            this.tabPage2.Controls.Add(this.lblvidY1);
-            this.tabPage2.Controls.Add(this.lblvidX1);
-            this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.txtvidCus);
-            this.tabPage2.Controls.Add(this.checkvidCmd);
-            this.tabPage2.Controls.Add(this.lblvidY2);
-            this.tabPage2.Controls.Add(this.lblvidX2);
-            this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.label13);
-            this.tabPage2.Controls.Add(this.label12);
-            this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.btnvidFind);
-            this.tabPage2.Controls.Add(this.label9);
-            this.tabPage2.ForeColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
+            this.button1.BackColor = System.Drawing.Color.Black;
+            resources.ApplyResources(this.button1, "button1");
+            this.button1.Cursor = System.Windows.Forms.Cursors.Help;
+            this.button1.ForeColor = System.Drawing.Color.LimeGreen;
+            this.button1.Name = "button1";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_2);
             // 
-            // label11
+            // txtvidEND
             // 
-            resources.ApplyResources(this.label11, "label11");
-            this.label11.Name = "label11";
-            // 
-            // numvidY
-            // 
-            resources.ApplyResources(this.numvidY, "numvidY");
-            this.numvidY.Name = "numvidY";
-            this.numvidY.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-            // 
-            // numvidX
-            // 
-            resources.ApplyResources(this.numvidX, "numvidX");
-            this.numvidX.Name = "numvidX";
-            this.numvidX.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.txtvidEND.BackColor = System.Drawing.SystemColors.InfoText;
+            this.txtvidEND.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.txtvidEND, "txtvidEND");
+            this.txtvidEND.ForeColor = System.Drawing.Color.LawnGreen;
+            this.txtvidEND.Name = "txtvidEND";
+            this.txtvidEND.ReadOnly = true;
             // 
             // txtvidOutname
             // 
@@ -179,30 +139,9 @@
             this.txtvidOutname.Name = "txtvidOutname";
             this.txtvidOutname.TextChanged += new System.EventHandler(this.txtvidOutname_TextChanged);
             // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.Transparent;
-            this.panel3.Controls.Add(this.radvidFix);
-            this.panel3.Controls.Add(this.radvidCus);
-            resources.ApplyResources(this.panel3, "panel3");
-            this.panel3.Name = "panel3";
-            // 
-            // radvidFix
-            // 
-            resources.ApplyResources(this.radvidFix, "radvidFix");
-            this.radvidFix.Name = "radvidFix";
-            this.radvidFix.UseVisualStyleBackColor = true;
-            this.radvidFix.CheckedChanged += new System.EventHandler(this.radioButton12_CheckedChanged);
-            // 
-            // radvidCus
-            // 
-            resources.ApplyResources(this.radvidCus, "radvidCus");
-            this.radvidCus.Name = "radvidCus";
-            this.radvidCus.UseVisualStyleBackColor = true;
-            this.radvidCus.CheckedChanged += new System.EventHandler(this.radioButton12_CheckedChanged);
-            // 
             // txtvidPath
             // 
+            this.txtvidPath.AllowDrop = true;
             resources.ApplyResources(this.txtvidPath, "txtvidPath");
             this.txtvidPath.ForeColor = System.Drawing.Color.Black;
             this.txtvidPath.Name = "txtvidPath";
@@ -220,6 +159,8 @@
             // 
             resources.ApplyResources(this.radvidN, "radvidN");
             this.radvidN.BackColor = System.Drawing.Color.Transparent;
+            this.radvidN.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidN.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radvidN.Name = "radvidN";
             this.radvidN.UseVisualStyleBackColor = false;
             this.radvidN.CheckedChanged += new System.EventHandler(this.radvidN_CheckedChanged);
@@ -227,6 +168,8 @@
             // radvidA
             // 
             resources.ApplyResources(this.radvidA, "radvidA");
+            this.radvidA.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidA.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radvidA.Name = "radvidA";
             this.radvidA.UseVisualStyleBackColor = true;
             this.radvidA.CheckedChanged += new System.EventHandler(this.radimgA_CheckedChanged);
@@ -243,6 +186,8 @@
             // radvidX4
             // 
             resources.ApplyResources(this.radvidX4, "radvidX4");
+            this.radvidX4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidX4.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radvidX4.Name = "radvidX4";
             this.radvidX4.UseVisualStyleBackColor = true;
             this.radvidX4.CheckedChanged += new System.EventHandler(this.radvidX4_CheckedChanged);
@@ -250,6 +195,8 @@
             // radvidX3
             // 
             resources.ApplyResources(this.radvidX3, "radvidX3");
+            this.radvidX3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidX3.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radvidX3.Name = "radvidX3";
             this.radvidX3.UseVisualStyleBackColor = true;
             this.radvidX3.CheckedChanged += new System.EventHandler(this.radvidX3_CheckedChanged);
@@ -257,6 +204,8 @@
             // radvidX2
             // 
             resources.ApplyResources(this.radvidX2, "radvidX2");
+            this.radvidX2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidX2.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radvidX2.Name = "radvidX2";
             this.radvidX2.UseVisualStyleBackColor = true;
             this.radvidX2.CheckedChanged += new System.EventHandler(this.radvidX2_CheckedChanged);
@@ -264,17 +213,22 @@
             // checkvidOutname
             // 
             resources.ApplyResources(this.checkvidOutname, "checkvidOutname");
+            this.checkvidOutname.BackColor = System.Drawing.Color.Transparent;
+            this.checkvidOutname.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.checkvidOutname.ForeColor = System.Drawing.Color.Transparent;
             this.checkvidOutname.Name = "checkvidOutname";
-            this.checkvidOutname.UseVisualStyleBackColor = true;
+            this.checkvidOutname.UseVisualStyleBackColor = false;
             this.checkvidOutname.CheckedChanged += new System.EventHandler(this.checkvidOutname_CheckedChanged);
             // 
             // btnvidSubmit
             // 
             this.btnvidSubmit.BackColor = System.Drawing.Color.Brown;
+            this.btnvidSubmit.Cursor = System.Windows.Forms.Cursors.Cross;
             resources.ApplyResources(this.btnvidSubmit, "btnvidSubmit");
+            this.btnvidSubmit.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.btnvidSubmit.Name = "btnvidSubmit";
             this.btnvidSubmit.UseVisualStyleBackColor = false;
+            this.btnvidSubmit.Click += new System.EventHandler(this.btnvidSubmit_Click);
             // 
             // radvidOutloc2
             // 
@@ -292,41 +246,29 @@
             this.radvidOutloc1.UseVisualStyleBackColor = true;
             this.radvidOutloc1.CheckedChanged += new System.EventHandler(this.radvidOutloc1_CheckedChanged);
             // 
-            // radioButton10
-            // 
-            resources.ApplyResources(this.radioButton10, "radioButton10");
-            this.radioButton10.ForeColor = System.Drawing.Color.Transparent;
-            this.radioButton10.Name = "radioButton10";
-            this.radioButton10.UseVisualStyleBackColor = true;
-            // 
             // btnvidOutdir
             // 
             this.btnvidOutdir.BackColor = System.Drawing.Color.DimGray;
+            this.btnvidOutdir.Cursor = System.Windows.Forms.Cursors.Help;
             resources.ApplyResources(this.btnvidOutdir, "btnvidOutdir");
             this.btnvidOutdir.ForeColor = System.Drawing.Color.Transparent;
             this.btnvidOutdir.Name = "btnvidOutdir";
             this.btnvidOutdir.UseVisualStyleBackColor = false;
             this.btnvidOutdir.Click += new System.EventHandler(this.btnvidOutdir_Click);
             // 
-            // lblvidY1
-            // 
-            resources.ApplyResources(this.lblvidY1, "lblvidY1");
-            this.lblvidY1.ForeColor = System.Drawing.Color.Transparent;
-            this.lblvidY1.Name = "lblvidY1";
-            this.lblvidY1.Click += new System.EventHandler(this.label12_Click);
-            // 
-            // lblvidX1
-            // 
-            resources.ApplyResources(this.lblvidX1, "lblvidX1");
-            this.lblvidX1.ForeColor = System.Drawing.Color.Transparent;
-            this.lblvidX1.Name = "lblvidX1";
-            this.lblvidX1.Click += new System.EventHandler(this.label12_Click);
-            // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
+            this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.ForeColor = System.Drawing.Color.Transparent;
             this.label3.Name = "label3";
+            // 
+            // txtFPS
+            // 
+            resources.ApplyResources(this.txtFPS, "txtFPS");
+            this.txtFPS.ForeColor = System.Drawing.Color.Black;
+            this.txtFPS.Name = "txtFPS";
+            this.txtFPS.TextChanged += new System.EventHandler(this.txtFPS_TextChanged);
             // 
             // txtvidCus
             // 
@@ -335,51 +277,63 @@
             this.txtvidCus.Name = "txtvidCus";
             this.txtvidCus.TextChanged += new System.EventHandler(this.txtvidCus_TextChanged);
             // 
-            // checkvidCmd
+            // txtvidLength
             // 
-            resources.ApplyResources(this.checkvidCmd, "checkvidCmd");
-            this.checkvidCmd.ForeColor = System.Drawing.Color.Transparent;
-            this.checkvidCmd.Name = "checkvidCmd";
-            this.checkvidCmd.UseVisualStyleBackColor = true;
-            this.checkvidCmd.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            resources.ApplyResources(this.txtvidLength, "txtvidLength");
+            this.txtvidLength.ForeColor = System.Drawing.Color.Black;
+            this.txtvidLength.Name = "txtvidLength";
+            this.txtvidLength.TextChanged += new System.EventHandler(this.txtvidLength_TextChanged);
             // 
-            // lblvidY2
+            // checkvidCus
             // 
-            resources.ApplyResources(this.lblvidY2, "lblvidY2");
-            this.lblvidY2.ForeColor = System.Drawing.Color.Transparent;
-            this.lblvidY2.Name = "lblvidY2";
-            this.lblvidY2.Click += new System.EventHandler(this.label10_Click);
+            resources.ApplyResources(this.checkvidCus, "checkvidCus");
+            this.checkvidCus.BackColor = System.Drawing.Color.Transparent;
+            this.checkvidCus.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.checkvidCus.ForeColor = System.Drawing.Color.Transparent;
+            this.checkvidCus.Name = "checkvidCus";
+            this.checkvidCus.UseVisualStyleBackColor = false;
+            this.checkvidCus.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
-            // lblvidX2
+            // checkvidFPS
             // 
-            resources.ApplyResources(this.lblvidX2, "lblvidX2");
-            this.lblvidX2.ForeColor = System.Drawing.Color.Transparent;
-            this.lblvidX2.Name = "lblvidX2";
-            this.lblvidX2.Click += new System.EventHandler(this.label10_Click);
+            resources.ApplyResources(this.checkvidFPS, "checkvidFPS");
+            this.checkvidFPS.BackColor = System.Drawing.Color.Transparent;
+            this.checkvidFPS.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.checkvidFPS.ForeColor = System.Drawing.Color.Transparent;
+            this.checkvidFPS.Name = "checkvidFPS";
+            this.checkvidFPS.UseVisualStyleBackColor = false;
+            this.checkvidFPS.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // checkvidLength
+            // 
+            resources.ApplyResources(this.checkvidLength, "checkvidLength");
+            this.checkvidLength.BackColor = System.Drawing.Color.Transparent;
+            this.checkvidLength.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.checkvidLength.ForeColor = System.Drawing.Color.Transparent;
+            this.checkvidLength.Name = "checkvidLength";
+            this.checkvidLength.UseVisualStyleBackColor = false;
+            this.checkvidLength.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // label7
             // 
             resources.ApplyResources(this.label7, "label7");
+            this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.ForeColor = System.Drawing.Color.Transparent;
             this.label7.Name = "label7";
-            // 
-            // label12
-            // 
-            resources.ApplyResources(this.label12, "label12");
-            this.label12.ForeColor = System.Drawing.Color.Transparent;
-            this.label12.Name = "label12";
-            this.label12.Click += new System.EventHandler(this.label12_Click_1);
             // 
             // label8
             // 
             resources.ApplyResources(this.label8, "label8");
+            this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.ForeColor = System.Drawing.Color.Transparent;
             this.label8.Name = "label8";
             // 
             // btnvidFind
             // 
             this.btnvidFind.BackColor = System.Drawing.Color.DimGray;
+            this.btnvidFind.Cursor = System.Windows.Forms.Cursors.AppStarting;
             resources.ApplyResources(this.btnvidFind, "btnvidFind");
+            this.btnvidFind.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.btnvidFind.Name = "btnvidFind";
             this.btnvidFind.UseVisualStyleBackColor = false;
             this.btnvidFind.Click += new System.EventHandler(this.btnvidFind_Click);
@@ -391,36 +345,6 @@
             this.label9.ForeColor = System.Drawing.Color.Transparent;
             this.label9.Name = "label9";
             // 
-            // btnimgOutdir
-            // 
-            this.btnimgOutdir.BackColor = System.Drawing.Color.Black;
-            this.btnimgOutdir.Controls.Add(this.label10);
-            this.btnimgOutdir.Controls.Add(this.txtimgOutname);
-            this.btnimgOutdir.Controls.Add(this.txtimgPath);
-            this.btnimgOutdir.Controls.Add(this.panel4);
-            this.btnimgOutdir.Controls.Add(this.panel5);
-            this.btnimgOutdir.Controls.Add(this.btnimgSubmit);
-            this.btnimgOutdir.Controls.Add(this.radimgOutloc2);
-            this.btnimgOutdir.Controls.Add(this.radimgOutloc1);
-            this.btnimgOutdir.Controls.Add(this.radioButton6);
-            this.btnimgOutdir.Controls.Add(this.button9);
-            this.btnimgOutdir.Controls.Add(this.label6);
-            this.btnimgOutdir.Controls.Add(this.checkimgOutname);
-            this.btnimgOutdir.Controls.Add(this.label5);
-            this.btnimgOutdir.Controls.Add(this.label4);
-            this.btnimgOutdir.Controls.Add(this.btnimgFind);
-            this.btnimgOutdir.Controls.Add(this.label2);
-            this.btnimgOutdir.ForeColor = System.Drawing.Color.Transparent;
-            resources.ApplyResources(this.btnimgOutdir, "btnimgOutdir");
-            this.btnimgOutdir.Name = "btnimgOutdir";
-            this.btnimgOutdir.Click += new System.EventHandler(this.tabPage1_Click);
-            // 
-            // label10
-            // 
-            resources.ApplyResources(this.label10, "label10");
-            this.label10.Name = "label10";
-            this.label10.Click += new System.EventHandler(this.label10_Click_1);
-            // 
             // txtimgOutname
             // 
             resources.ApplyResources(this.txtimgOutname, "txtimgOutname");
@@ -430,6 +354,7 @@
             // 
             // txtimgPath
             // 
+            this.txtimgPath.AllowDrop = true;
             resources.ApplyResources(this.txtimgPath, "txtimgPath");
             this.txtimgPath.ForeColor = System.Drawing.Color.Black;
             this.txtimgPath.Name = "txtimgPath";
@@ -442,11 +367,14 @@
             this.panel4.Controls.Add(this.radimgA);
             resources.ApplyResources(this.panel4, "panel4");
             this.panel4.Name = "panel4";
+            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
             // 
             // radimgN
             // 
             resources.ApplyResources(this.radimgN, "radimgN");
             this.radimgN.BackColor = System.Drawing.Color.Transparent;
+            this.radimgN.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgN.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radimgN.Name = "radimgN";
             this.radimgN.UseVisualStyleBackColor = false;
             this.radimgN.CheckedChanged += new System.EventHandler(this.radimgN_CheckedChanged);
@@ -454,8 +382,11 @@
             // radimgA
             // 
             resources.ApplyResources(this.radimgA, "radimgA");
+            this.radimgA.BackColor = System.Drawing.Color.Transparent;
+            this.radimgA.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgA.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radimgA.Name = "radimgA";
-            this.radimgA.UseVisualStyleBackColor = true;
+            this.radimgA.UseVisualStyleBackColor = false;
             this.radimgA.CheckedChanged += new System.EventHandler(this.radimgA_CheckedChanged_1);
             // 
             // panel5
@@ -466,32 +397,44 @@
             this.panel5.Controls.Add(this.radimgX2);
             resources.ApplyResources(this.panel5, "panel5");
             this.panel5.Name = "panel5";
+            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel5_Paint);
             // 
             // radimgX4
             // 
             resources.ApplyResources(this.radimgX4, "radimgX4");
+            this.radimgX4.BackColor = System.Drawing.Color.Transparent;
+            this.radimgX4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgX4.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radimgX4.Name = "radimgX4";
-            this.radimgX4.UseVisualStyleBackColor = true;
+            this.radimgX4.UseVisualStyleBackColor = false;
             this.radimgX4.CheckedChanged += new System.EventHandler(this.radimgX4_CheckedChanged);
             // 
             // radimgX3
             // 
             resources.ApplyResources(this.radimgX3, "radimgX3");
+            this.radimgX3.BackColor = System.Drawing.Color.Transparent;
+            this.radimgX3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgX3.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radimgX3.Name = "radimgX3";
-            this.radimgX3.UseVisualStyleBackColor = true;
+            this.radimgX3.UseVisualStyleBackColor = false;
             this.radimgX3.CheckedChanged += new System.EventHandler(this.radimgX3_CheckedChanged);
             // 
             // radimgX2
             // 
             resources.ApplyResources(this.radimgX2, "radimgX2");
+            this.radimgX2.BackColor = System.Drawing.Color.Transparent;
+            this.radimgX2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgX2.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.radimgX2.Name = "radimgX2";
-            this.radimgX2.UseVisualStyleBackColor = true;
+            this.radimgX2.UseVisualStyleBackColor = false;
             this.radimgX2.CheckedChanged += new System.EventHandler(this.radimgX2_CheckedChanged);
             // 
             // btnimgSubmit
             // 
             this.btnimgSubmit.BackColor = System.Drawing.Color.Brown;
+            this.btnimgSubmit.Cursor = System.Windows.Forms.Cursors.Cross;
             resources.ApplyResources(this.btnimgSubmit, "btnimgSubmit");
+            this.btnimgSubmit.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.btnimgSubmit.Name = "btnimgSubmit";
             this.btnimgSubmit.UseVisualStyleBackColor = false;
             this.btnimgSubmit.Click += new System.EventHandler(this.submit_Click);
@@ -499,40 +442,38 @@
             // radimgOutloc2
             // 
             resources.ApplyResources(this.radimgOutloc2, "radimgOutloc2");
+            this.radimgOutloc2.BackColor = System.Drawing.Color.Transparent;
+            this.radimgOutloc2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.radimgOutloc2.ForeColor = System.Drawing.Color.Transparent;
             this.radimgOutloc2.Name = "radimgOutloc2";
-            this.radimgOutloc2.UseVisualStyleBackColor = true;
+            this.radimgOutloc2.UseVisualStyleBackColor = false;
             this.radimgOutloc2.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
             // 
             // radimgOutloc1
             // 
             resources.ApplyResources(this.radimgOutloc1, "radimgOutloc1");
+            this.radimgOutloc1.BackColor = System.Drawing.Color.Transparent;
             this.radimgOutloc1.CausesValidation = false;
+            this.radimgOutloc1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.radimgOutloc1.ForeColor = System.Drawing.Color.Transparent;
             this.radimgOutloc1.Name = "radimgOutloc1";
-            this.radimgOutloc1.UseVisualStyleBackColor = true;
+            this.radimgOutloc1.UseVisualStyleBackColor = false;
             this.radimgOutloc1.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
             // 
-            // radioButton6
+            // btnimgOutdir
             // 
-            resources.ApplyResources(this.radioButton6, "radioButton6");
-            this.radioButton6.ForeColor = System.Drawing.Color.Transparent;
-            this.radioButton6.Name = "radioButton6";
-            this.radioButton6.UseVisualStyleBackColor = true;
-            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
-            // 
-            // button9
-            // 
-            this.button9.BackColor = System.Drawing.Color.DimGray;
-            resources.ApplyResources(this.button9, "button9");
-            this.button9.ForeColor = System.Drawing.Color.Transparent;
-            this.button9.Name = "button9";
-            this.button9.UseVisualStyleBackColor = false;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.btnimgOutdir.BackColor = System.Drawing.Color.DimGray;
+            this.btnimgOutdir.Cursor = System.Windows.Forms.Cursors.Help;
+            resources.ApplyResources(this.btnimgOutdir, "btnimgOutdir");
+            this.btnimgOutdir.ForeColor = System.Drawing.Color.Transparent;
+            this.btnimgOutdir.Name = "btnimgOutdir";
+            this.btnimgOutdir.UseVisualStyleBackColor = false;
+            this.btnimgOutdir.Click += new System.EventHandler(this.button9_Click);
             // 
             // label6
             // 
             resources.ApplyResources(this.label6, "label6");
+            this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.ForeColor = System.Drawing.Color.Transparent;
             this.label6.Name = "label6";
             this.label6.Click += new System.EventHandler(this.label6_Click);
@@ -540,14 +481,17 @@
             // checkimgOutname
             // 
             resources.ApplyResources(this.checkimgOutname, "checkimgOutname");
+            this.checkimgOutname.BackColor = System.Drawing.Color.Transparent;
+            this.checkimgOutname.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.checkimgOutname.ForeColor = System.Drawing.Color.Transparent;
             this.checkimgOutname.Name = "checkimgOutname";
-            this.checkimgOutname.UseVisualStyleBackColor = true;
+            this.checkimgOutname.UseVisualStyleBackColor = false;
             this.checkimgOutname.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // label5
             // 
             resources.ApplyResources(this.label5, "label5");
+            this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.ForeColor = System.Drawing.Color.Transparent;
             this.label5.Name = "label5";
             this.label5.Click += new System.EventHandler(this.label5_Click);
@@ -555,6 +499,7 @@
             // label4
             // 
             resources.ApplyResources(this.label4, "label4");
+            this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.ForeColor = System.Drawing.Color.Transparent;
             this.label4.Name = "label4";
             this.label4.Click += new System.EventHandler(this.label4_Click);
@@ -562,7 +507,9 @@
             // btnimgFind
             // 
             this.btnimgFind.BackColor = System.Drawing.Color.DimGray;
+            this.btnimgFind.Cursor = System.Windows.Forms.Cursors.AppStarting;
             resources.ApplyResources(this.btnimgFind, "btnimgFind");
+            this.btnimgFind.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.btnimgFind.Name = "btnimgFind";
             this.btnimgFind.UseVisualStyleBackColor = false;
             this.btnimgFind.Click += new System.EventHandler(this.button1_Click_1);
@@ -570,61 +517,180 @@
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
+            this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.ForeColor = System.Drawing.Color.Transparent;
             this.label2.Name = "label2";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
-            // tabControl1
+            // checkSound
             // 
-            resources.ApplyResources(this.tabControl1, "tabControl1");
-            this.tabControl1.Controls.Add(this.btnimgOutdir);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Multiline = true;
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.TabStop = false;
+            resources.ApplyResources(this.checkSound, "checkSound");
+            this.checkSound.Checked = true;
+            this.checkSound.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkSound.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.checkSound.ForeColor = System.Drawing.Color.Red;
+            this.checkSound.Name = "checkSound";
+            this.checkSound.UseVisualStyleBackColor = true;
+            this.checkSound.CheckedChanged += new System.EventHandler(this.checkSound_CheckedChanged);
             // 
-            // label13
+            // panelimg
             // 
-            resources.ApplyResources(this.label13, "label13");
-            this.label13.ForeColor = System.Drawing.Color.Transparent;
-            this.label13.Name = "label13";
-            this.label13.Click += new System.EventHandler(this.label12_Click_1);
+            this.panelimg.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panelimg.Controls.Add(this.btnimgSubmit);
+            this.panelimg.Controls.Add(this.label2);
+            this.panelimg.Controls.Add(this.radimgOutloc1);
+            this.panelimg.Controls.Add(this.txtimgOutname);
+            this.panelimg.Controls.Add(this.btnimgOutdir);
+            this.panelimg.Controls.Add(this.btnimgFind);
+            this.panelimg.Controls.Add(this.radimgOutloc2);
+            this.panelimg.Controls.Add(this.txtimgPath);
+            this.panelimg.Controls.Add(this.label6);
+            this.panelimg.Controls.Add(this.label4);
+            this.panelimg.Controls.Add(this.panel4);
+            this.panelimg.Controls.Add(this.checkimgOutname);
+            this.panelimg.Controls.Add(this.label5);
+            this.panelimg.Controls.Add(this.panel5);
+            resources.ApplyResources(this.panelimg, "panelimg");
+            this.panelimg.Name = "panelimg";
+            this.panelimg.TabStop = true;
+            this.panelimg.Paint += new System.Windows.Forms.PaintEventHandler(this.panelimg_Paint);
             // 
-            // numFPS
+            // panelvid
             // 
-            resources.ApplyResources(this.numFPS, "numFPS");
-            this.numFPS.Name = "numFPS";
-            this.numFPS.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.panelvid.BackColor = System.Drawing.Color.Black;
+            this.panelvid.Controls.Add(this.btnvidSubmit);
+            this.panelvid.Controls.Add(this.label11);
+            this.panelvid.Controls.Add(this.checkThumb);
+            this.panelvid.Controls.Add(this.btnvidThumb);
+            this.panelvid.Controls.Add(this.label9);
+            this.panelvid.Controls.Add(this.label3);
+            this.panelvid.Controls.Add(this.btnvidOutdir);
+            this.panelvid.Controls.Add(this.txtvidOutname);
+            this.panelvid.Controls.Add(this.txtFPS);
+            this.panelvid.Controls.Add(this.btnvidFind);
+            this.panelvid.Controls.Add(this.txtvidPath);
+            this.panelvid.Controls.Add(this.txtvidCus);
+            this.panelvid.Controls.Add(this.label8);
+            this.panelvid.Controls.Add(this.radvidOutloc1);
+            this.panelvid.Controls.Add(this.panel2);
+            this.panelvid.Controls.Add(this.txtvidLength);
+            this.panelvid.Controls.Add(this.label7);
+            this.panelvid.Controls.Add(this.radvidOutloc2);
+            this.panelvid.Controls.Add(this.panel1);
+            this.panelvid.Controls.Add(this.checkvidCus);
+            this.panelvid.Controls.Add(this.checkvidLength);
+            this.panelvid.Controls.Add(this.checkvidOutname);
+            this.panelvid.Controls.Add(this.checkvidFPS);
+            resources.ApplyResources(this.panelvid, "panelvid");
+            this.panelvid.Name = "panelvid";
+            this.panelvid.Paint += new System.Windows.Forms.PaintEventHandler(this.panelvid_Paint);
             // 
-            // Form1
+            // label11
+            // 
+            resources.ApplyResources(this.label11, "label11");
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.ForeColor = System.Drawing.Color.Transparent;
+            this.label11.Name = "label11";
+            // 
+            // checkThumb
+            // 
+            resources.ApplyResources(this.checkThumb, "checkThumb");
+            this.checkThumb.BackColor = System.Drawing.Color.Transparent;
+            this.checkThumb.ForeColor = System.Drawing.Color.Transparent;
+            this.checkThumb.Name = "checkThumb";
+            this.checkThumb.UseVisualStyleBackColor = false;
+            this.checkThumb.CheckedChanged += new System.EventHandler(this.checkThumb_CheckedChanged);
+            // 
+            // btnvidThumb
+            // 
+            this.btnvidThumb.BackColor = System.Drawing.Color.DimGray;
+            this.btnvidThumb.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            resources.ApplyResources(this.btnvidThumb, "btnvidThumb");
+            this.btnvidThumb.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnvidThumb.Name = "btnvidThumb";
+            this.btnvidThumb.UseVisualStyleBackColor = false;
+            this.btnvidThumb.Click += new System.EventHandler(this.btnvidThumb_Click);
+            // 
+            // btnIMG
+            // 
+            this.btnIMG.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btnIMG.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            resources.ApplyResources(this.btnIMG, "btnIMG");
+            this.btnIMG.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnIMG.Name = "btnIMG";
+            this.btnIMG.UseVisualStyleBackColor = false;
+            this.btnIMG.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // btnVID
+            // 
+            this.btnVID.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btnVID.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            resources.ApplyResources(this.btnVID, "btnVID");
+            this.btnVID.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnVID.Name = "btnVID";
+            this.btnVID.UseVisualStyleBackColor = false;
+            this.btnVID.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            resources.ApplyResources(this.pictureBox1, "pictureBox1");
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // label10
+            // 
+            resources.ApplyResources(this.label10, "label10");
+            this.label10.ForeColor = System.Drawing.Color.Transparent;
+            this.label10.Name = "label10";
+            this.label10.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // checkimg
+            // 
+            resources.ApplyResources(this.checkimg, "checkimg");
+            this.checkimg.Checked = true;
+            this.checkimg.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkimg.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.checkimg.ForeColor = System.Drawing.Color.Red;
+            this.checkimg.Name = "checkimg";
+            this.checkimg.UseVisualStyleBackColor = true;
+            this.checkimg.CheckedChanged += new System.EventHandler(this.checkSound_CheckedChanged);
+            // 
+            // gui1
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.txtvidEND);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.btnVID);
+            this.Controls.Add(this.btnIMG);
+            this.Controls.Add(this.checkimg);
+            this.Controls.Add(this.checkSound);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.panelimg);
+            this.Controls.Add(this.panelvid);
+            this.Cursor = System.Windows.Forms.Cursors.UpArrow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "Form1";
+            this.Name = "gui1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numvidY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numvidX)).EndInit();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.btnimgOutdir.ResumeLayout(false);
-            this.btnimgOutdir.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numFPS)).EndInit();
+            this.panelimg.ResumeLayout(false);
+            this.panelimg.PerformLayout();
+            this.panelvid.ResumeLayout(false);
+            this.panelvid.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -634,12 +700,10 @@
 
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnimgSubmit;
         private System.Windows.Forms.RadioButton radimgOutloc2;
         private System.Windows.Forms.RadioButton radimgOutloc1;
-        private System.Windows.Forms.RadioButton radioButton6;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button btnimgOutdir;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtimgOutname;
         private System.Windows.Forms.TextBox txtimgPath;
@@ -648,37 +712,25 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnimgFind;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.Button btnvidSubmit;
         private System.Windows.Forms.RadioButton radvidOutloc2;
         private System.Windows.Forms.RadioButton radvidOutloc1;
-        private System.Windows.Forms.RadioButton radioButton10;
         private System.Windows.Forms.Button btnvidOutdir;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtvidOutname;
         private System.Windows.Forms.TextBox txtvidPath;
-        private System.Windows.Forms.CheckBox checkvidCmd;
+        private System.Windows.Forms.CheckBox checkvidLength;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnvidFind;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.RadioButton radvidFix;
-        private System.Windows.Forms.RadioButton radvidCus;
-        private System.Windows.Forms.TextBox txtvidCus;
         private System.Windows.Forms.CheckBox checkvidOutname;
-        private System.Windows.Forms.Label lblvidX1;
-        private System.Windows.Forms.Label lblvidY2;
-        private System.Windows.Forms.Label lblvidX2;
-        private System.Windows.Forms.Label lblvidY1;
         private System.Windows.Forms.RadioButton radvidX4;
         private System.Windows.Forms.RadioButton radvidX2;
         private System.Windows.Forms.RadioButton radvidX3;
         private System.Windows.Forms.RadioButton radvidN;
         private System.Windows.Forms.RadioButton radvidA;
-        private System.Windows.Forms.TabPage btnimgOutdir;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.RadioButton radimgN;
         private System.Windows.Forms.RadioButton radimgA;
@@ -686,13 +738,26 @@
         private System.Windows.Forms.RadioButton radimgX4;
         private System.Windows.Forms.RadioButton radimgX3;
         private System.Windows.Forms.RadioButton radimgX2;
-        private System.Windows.Forms.NumericUpDown numvidX;
-        private System.Windows.Forms.NumericUpDown numvidY;
+        private System.Windows.Forms.TextBox txtFPS;
+        private System.Windows.Forms.TextBox txtvidLength;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.CheckBox checkvidFPS;
+        private System.Windows.Forms.TextBox txtvidCus;
+        private System.Windows.Forms.CheckBox checkvidCus;
+        private System.Windows.Forms.TextBox txtvidEND;
+        private System.Windows.Forms.CheckBox checkSound;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel panelimg;
+        private System.Windows.Forms.Panel panelvid;
+        private System.Windows.Forms.Button btnIMG;
+        private System.Windows.Forms.Button btnVID;
+        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkimg;
+        private System.Windows.Forms.Button btnvidThumb;
+        private System.Windows.Forms.CheckBox checkThumb;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.NumericUpDown numFPS;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnvidSubmit;
     }
 }
 
