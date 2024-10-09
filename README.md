@@ -12,6 +12,7 @@ Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and 
 
 Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 </h1>
+
 # FEATURES
 
 ## IMAGE
