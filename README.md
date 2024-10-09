@@ -1,5 +1,6 @@
 # Realesrgan GUI
-### Upscaler image and video with simple user interface
+### Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use with some additional features
+Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 
 
 
