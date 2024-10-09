@@ -4,8 +4,10 @@
 
 
 ## [Download here](https://github.com/eroge69/RealesrganGUI/releases)
-![Caapture](https://github.com/user-attachments/assets/e82829e7-4bed-4077-9991-346cb977dfc5)
-
-![Capture](https://github.com/user-attachments/assets/cd93e28c-4d6c-4818-9a20-b92197b0a992)
 
 
+### Image menu
+![IMAGE MENU](https://github.com/user-attachments/assets/10876dca-8fa3-4d89-bec2-c914ea4afa0e)
+
+### Video menu
+![VIDEO MENU](https://github.com/user-attachments/assets/7a3db06a-a83e-4cdb-9635-8a26fd468f88)
