@@ -10,7 +10,7 @@ Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and 
 
 [Download here](https://github.com/eroge69/RealesrganGUI/releases) <br></br><br></br>
 
-Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
+Original by xinntao [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 </h1>
 
 # USAGE
