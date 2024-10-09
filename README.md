@@ -46,6 +46,8 @@ Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portab
 - CMD menu to see to see how the process going
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
 - You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
+
+> I use Visual Studio 2022 - Windows Form o make this app
 ### Image menu
 ![IMAGE MENU](https://github.com/user-attachments/assets/10876dca-8fa3-4d89-bec2-c914ea4afa0e)
 
