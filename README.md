@@ -1,5 +1,5 @@
 # Realesrgan GUI
-### Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use with some additional features
+### Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features
 
 
 ## [Download here](https://github.com/eroge69/RealesrganGUI/releases)
