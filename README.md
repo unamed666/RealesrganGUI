@@ -7,8 +7,8 @@ Realesrgan GUI For Windows OS
 </p>
 <h2 align="center">
 Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features <br><br><br>
-  <br></br><br></br><br></br><br></br>
-[Download here](https://github.com/eroge69/RealesrganGUI/releases) <br></br><br></br><br></br><br></br>
+
+[Download here](https://github.com/eroge69/RealesrganGUI/releases) <br></br><br></br>
 
 Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 </h1>
