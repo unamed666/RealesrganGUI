@@ -44,7 +44,7 @@ Original by xinntao [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-
 ## OTHER
 
 - Notification sound and button color if the file created or failed
-- CMD menu to see to see how the process going
+- CMD menu to see the process
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
 - You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
 <br><br><br><br><br><br><br>
