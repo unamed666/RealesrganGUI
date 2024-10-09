@@ -3,8 +3,9 @@ Realesrgan GUI For Windows OS
 </h1>
 
 <p align="center">
-  <img  src="https://github.com/user-attachments/assets/d2ce0589-138d-41d2-bdde-36b95189737f"> 
+  <img width="200" height="200" src="https://github.com/user-attachments/assets/d2ce0589-138d-41d2-bdde-36b95189737f">
 </p>
+   
 <h2 align="center">
 Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features <br><br><br>
 
