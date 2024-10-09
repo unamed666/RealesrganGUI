@@ -1006,7 +1006,7 @@ namespace Realesrgan
             };
             // 2.5 GIF Palette
             palettePath = $"{vidfileOut}\\palette.png";
-            string datasubmit69 = $"-i \"{out_frames}\\frame%08d.png\" -vf \"palettegen\" {palettePath}";
+            string datasubmit69 = $"-i \"{out_frames}\\frame%08d.png\" -vf \"palettegen\" \"{palettePath}\"";
             ProcessStartInfo ps69 = new ProcessStartInfo
             {
                 FileName =exeFilePath,
@@ -1151,11 +1151,7 @@ namespace Realesrgan
             {
                 File.Delete(destinationPath);
             }
-            if (vidfileExt == ".gif")
-            {
-                LoadStandardImage($"{vidfileOut}\\{vidoutname}{vidfileExt}");
-            }
-
+            
             panelimg.Enabled = true;
             panelvid.Enabled = true;
             PlayCompletionSound();
