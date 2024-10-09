@@ -7,8 +7,8 @@ Realesrgan GUI For Windows OS
 </p>
 <h2 align="center">
 Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features <br><br><br>
-  
-[Download here](https://github.com/eroge69/RealesrganGUI/releases) <br><br>
+  <br></br><br></br><br></br><br></br>
+[Download here](https://github.com/eroge69/RealesrganGUI/releases) <br></br><br></br><br></br><br></br>
 
 Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
 </h1>
@@ -46,8 +46,10 @@ Original [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portab
 - CMD menu to see to see how the process going
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
 - You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
+<br><br><br><br><br><br><br
+> I use Visual Studio 2022 - Windows Form to make this app
 
-> I use Visual Studio 2022 - Windows Form o make this app
+ <br><br><br><br><br><br><br><br><br>
 ### Image menu
 ![IMAGE MENU](https://github.com/user-attachments/assets/10876dca-8fa3-4d89-bec2-c914ea4afa0e)
 
