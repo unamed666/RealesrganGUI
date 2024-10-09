@@ -1,4 +1,11 @@
-# Realesrgan GUI
+<h1 align="center">
+Realesrgan GUI
+</h1>
+
+<p align="center">
+  <img  src="https://github.com/user-attachments/assets/d83a0c3a-f626-4333-9e53-7c255a9cf6f9">
+</p>
+
 ### Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and some additional features
 
 
