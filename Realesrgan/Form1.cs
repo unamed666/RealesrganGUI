@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -407,12 +408,22 @@ namespace Realesrgan
             panelimg.Enabled = false;
             panelvid.Enabled = false;
             txtvidEND.Text = null;
-            string datasubmit = " -i "+ imgfilePath +" -n "+ dataimg 
-                +" -s "+ imgscale +" -o " + '\u0022' + imgfileOut + "\\"+ imgoutname + imgfileExt + '\u0022' ;
-
-
-            string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
-
+            string modelz = string.Empty;
+            string exeFilePath = string.Empty;
+           
+            
+            if (radimgS.Checked == true)
+            {
+                exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                modelz = " -m ";
+            }
+            else
+            {
+                exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                modelz = " -n ";
+            }
+            string datasubmit = " -i " + imgfilePath + modelz + dataimg
+               + " -s " + imgscale + " -o " + '\u0022' + imgfileOut + "\\" + imgoutname + imgfileExt + '\u0022';
             ProcessStartInfo ps = new ProcessStartInfo
             {
                 FileName = exeFilePath,
@@ -990,11 +1001,20 @@ namespace Realesrgan
 
             // 2. UPSCALE: Upscale frames
             string out_frames = Path.Combine(twoLevelsUp, "Realesrgan", "out_frames");
-            string datasubmit2 = $"-i \"{tmpFrame}\" -o \"{out_frames}\" -n {datavid} -s {vidscale} -f png";
+            string exeFilePath2 = string.Empty;
+            string modelz = string.Empty;
+            if (radvidS.Checked == true)
+            {
+                exeFilePath2 = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                modelz = "-m";
+            }
+            else
+            {
+                exeFilePath2 = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                modelz = "-n";
+            }
 
-
-            string exeFilePath2 = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
-
+            string datasubmit2 = $"-i \"{tmpFrame}\" -o \"{out_frames}\" {modelz} {datavid} -s {vidscale} -f png";
             ProcessStartInfo ps2 = new ProcessStartInfo
             {
                 FileName = exeFilePath2,
@@ -1570,6 +1590,34 @@ namespace Realesrgan
         private void txtvidLength_TextChanged(object sender, EventArgs e)
         {
             vidLength = txtvidLength.Text;
+        }
+
+        private void radimgS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radimgS.Checked == true)
+            {
+                radimgX2.Enabled = false;
+                radimgX3.Enabled = false;
+                radimgX4.Checked = true;
+                dataimg = "models-DF2K_JPEG";
+                dataimg2 = "-S";
+                imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
+                txtimgOutname.Text = imgoutname;
+            }
+        }
+
+        private void radvidS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radvidS.Checked == true)
+            {
+                radvidX2.Enabled = false;
+                radvidX3.Enabled = false;
+                radvidX4.Checked = true;
+                datavid = "models-DF2K_JPEG";
+                datavid2 = "-S";
+                vidoutname = Path.GetFileNameWithoutExtension(vidfileName) + "-X" + vidscale + datavid2;
+                txtvidOutname.Text = vidoutname;
+            }
         }
     }
 }

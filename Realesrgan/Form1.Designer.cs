@@ -90,6 +90,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
             this.checkimg = new System.Windows.Forms.CheckBox();
+            this.radimgS = new System.Windows.Forms.RadioButton();
+            this.radvidS = new System.Windows.Forms.RadioButton();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -150,6 +152,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Controls.Add(this.radvidS);
             this.panel2.Controls.Add(this.radvidN);
             this.panel2.Controls.Add(this.radvidA);
             resources.ApplyResources(this.panel2, "panel2");
@@ -363,6 +366,7 @@
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.Transparent;
+            this.panel4.Controls.Add(this.radimgS);
             this.panel4.Controls.Add(this.radimgN);
             this.panel4.Controls.Add(this.radimgA);
             resources.ApplyResources(this.panel4, "panel4");
@@ -657,6 +661,26 @@
             this.checkimg.UseVisualStyleBackColor = true;
             this.checkimg.CheckedChanged += new System.EventHandler(this.checkSound_CheckedChanged);
             // 
+            // radimgS
+            // 
+            resources.ApplyResources(this.radimgS, "radimgS");
+            this.radimgS.BackColor = System.Drawing.Color.Transparent;
+            this.radimgS.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radimgS.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.radimgS.Name = "radimgS";
+            this.radimgS.UseVisualStyleBackColor = false;
+            this.radimgS.CheckedChanged += new System.EventHandler(this.radimgS_CheckedChanged);
+            // 
+            // radvidS
+            // 
+            resources.ApplyResources(this.radvidS, "radvidS");
+            this.radvidS.BackColor = System.Drawing.Color.Transparent;
+            this.radvidS.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.radvidS.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.radvidS.Name = "radvidS";
+            this.radvidS.UseVisualStyleBackColor = false;
+            this.radvidS.CheckedChanged += new System.EventHandler(this.radvidS_CheckedChanged);
+            // 
             // gui1
             // 
             resources.ApplyResources(this, "$this");
@@ -758,6 +782,8 @@
         private System.Windows.Forms.CheckBox checkThumb;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btnvidSubmit;
+        private System.Windows.Forms.RadioButton radimgS;
+        private System.Windows.Forms.RadioButton radvidS;
     }
 }
 
