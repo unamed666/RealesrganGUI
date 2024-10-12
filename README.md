@@ -28,6 +28,7 @@ Original RealSR [HERE](https://github.com/jixiaozhong/RealSR?tab=readme-ov-file#
 
 - Upscale x2 x3 x4 for Anime style picture
 - Upscale x4 for Normal style picture
+- NEW : Upscale x4 for RealSR style picture
 - Support .png, .jpg, .jpeg, .webp
 - preview selected picture
 
@@ -35,6 +36,7 @@ Original RealSR [HERE](https://github.com/jixiaozhong/RealSR?tab=readme-ov-file#
 
 - Upscale x2 x3 x4 for Anime style picture
 - Upscale x4 for Normal style picture
+- NEW : Upscale x4 for RealSR style picture
 - Support  .gif, .3gp, .mp4, .mkv
 - preview selected .gif or thumbnail
 - Change thumbnail for .mp4 and .mkv 
