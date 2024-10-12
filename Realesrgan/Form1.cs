@@ -838,6 +838,10 @@ namespace Realesrgan
             if (radimgX2.Checked == true)
             {
                 imgscale = "2";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesr-animevideov3";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
@@ -848,6 +852,10 @@ namespace Realesrgan
             if (radimgX3.Checked == true)
             {
                 imgscale = "3";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesr-animevideov3";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
@@ -858,6 +866,10 @@ namespace Realesrgan
             if (radimgX4.Checked == true)
             {
                 imgscale = "4";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesrgan-x4plus-anime";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
