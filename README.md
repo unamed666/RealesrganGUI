@@ -52,7 +52,7 @@ Original RealSR [HERE](https://github.com/jixiaozhong/RealSR?tab=readme-ov-file#
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
 - You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
 <br><br><br><br><br><br><br>
-> Visual Studio 2022 - Windows Form is used to make this app
+> Visual Studio 2022 - Windows Form is used to make this program
 
  <br><br><br><br><br><br><br><br><br>
 ### Image menu
