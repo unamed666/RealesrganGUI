@@ -145,16 +145,16 @@
     <value>NoControl</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>282, 9</value>
+    <value>255, 3</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>235, 45</value>
+    <value>311, 45</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Real-ESRGAN</value>
+    <value>Real-ESRGAN GUI</value>
   </data>
   <data name="label1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleCenter</value>
@@ -265,7 +265,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;txtvidOutname.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <data name="txtvidPath.Font" type="System.Drawing.Font, System.Drawing">
     <value>Tahoma, 12pt</value>
@@ -289,7 +289,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;txtvidPath.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>12</value>
   </data>
   <data name="&gt;&gt;radvidS.Name" xml:space="preserve">
     <value>radvidS</value>
@@ -346,7 +346,40 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;panel2.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>16</value>
+  </data>
+  <data name="radvidS.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="radvidS.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Times New Roman, 14.25pt, style=Bold</value>
+  </data>
+  <data name="radvidS.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="radvidS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>219, 15</value>
+  </data>
+  <data name="radvidS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>105, 26</value>
+  </data>
+  <data name="radvidS.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="radvidS.Text" xml:space="preserve">
+    <value>REALSR</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Name" xml:space="preserve">
+    <value>radvidS</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;radvidS.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="radvidN.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -469,7 +502,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>20</value>
   </data>
   <data name="radvidX4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -601,7 +634,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkvidOutname.ZOrder" xml:space="preserve">
-    <value>21</value>
+    <value>23</value>
   </data>
   <data name="btnvidSubmit.Font" type="System.Drawing.Font, System.Drawing">
     <value>Times New Roman, 15.75pt, style=Bold</value>
@@ -631,7 +664,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;btnvidSubmit.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="radvidOutloc2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -664,7 +697,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;radvidOutloc2.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>19</value>
   </data>
   <data name="radvidOutloc1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -697,7 +730,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;radvidOutloc1.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>15</value>
   </data>
   <data name="btnvidOutdir.Font" type="System.Drawing.Font, System.Drawing">
     <value>Times New Roman, 8.25pt, style=Bold</value>
@@ -727,7 +760,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;btnvidOutdir.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -760,7 +793,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="txtFPS.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -787,7 +820,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;txtFPS.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="txtvidCus.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -814,7 +847,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;txtvidCus.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>13</value>
   </data>
   <data name="txtvidLength.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -841,7 +874,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;txtvidLength.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>17</value>
   </data>
   <data name="checkvidCus.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -874,7 +907,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkvidCus.ZOrder" xml:space="preserve">
-    <value>19</value>
+    <value>21</value>
   </data>
   <data name="checkvidFPS.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -907,7 +940,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkvidFPS.ZOrder" xml:space="preserve">
-    <value>22</value>
+    <value>24</value>
   </data>
   <data name="checkvidLength.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -940,7 +973,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkvidLength.ZOrder" xml:space="preserve">
-    <value>20</value>
+    <value>22</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -973,7 +1006,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>18</value>
   </data>
   <data name="label8.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1006,7 +1039,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>14</value>
   </data>
   <data name="btnvidFind.Font" type="System.Drawing.Font, System.Drawing">
     <value>Times New Roman, 14.25pt, style=Bold</value>
@@ -1036,7 +1069,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;btnvidFind.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>11</value>
   </data>
   <data name="label9.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1069,7 +1102,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="txtimgOutname.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -1178,6 +1211,39 @@
   </data>
   <data name="&gt;&gt;panel4.ZOrder" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="radimgS.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="radimgS.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Times New Roman, 14.25pt, style=Bold</value>
+  </data>
+  <data name="radimgS.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="radimgS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>219, 15</value>
+  </data>
+  <data name="radimgS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>105, 26</value>
+  </data>
+  <data name="radimgS.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="radimgS.Text" xml:space="preserve">
+    <value>REALSR</value>
+  </data>
+  <data name="&gt;&gt;radimgS.Name" xml:space="preserve">
+    <value>radimgS</value>
+  </data>
+  <data name="&gt;&gt;radimgS.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;radimgS.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="&gt;&gt;radimgS.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="radimgN.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1776,6 +1842,30 @@
   <data name="&gt;&gt;panelimg.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
+  <data name="&gt;&gt;label12.Name" xml:space="preserve">
+    <value>label12</value>
+  </data>
+  <data name="&gt;&gt;label12.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
+    <value>panelvid</value>
+  </data>
+  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Name" xml:space="preserve">
+    <value>btnframeCounter</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Parent" xml:space="preserve">
+    <value>panelvid</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="&gt;&gt;label11.Name" xml:space="preserve">
     <value>label11</value>
   </data>
@@ -1786,7 +1876,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="&gt;&gt;checkThumb.Name" xml:space="preserve">
     <value>checkThumb</value>
@@ -1798,7 +1888,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkThumb.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="&gt;&gt;btnvidThumb.Name" xml:space="preserve">
     <value>btnvidThumb</value>
@@ -1810,7 +1900,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;btnvidThumb.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="panelvid.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 105</value>
@@ -1832,6 +1922,72 @@
   </data>
   <data name="&gt;&gt;panelvid.ZOrder" xml:space="preserve">
     <value>11</value>
+  </data>
+  <data name="label12.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label12.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Times New Roman, 14.25pt, style=Bold</value>
+  </data>
+  <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 108</value>
+  </data>
+  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 22</value>
+  </data>
+  <data name="label12.TabIndex" type="System.Int32, mscorlib">
+    <value>46</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>Frame Counter :</value>
+  </data>
+  <data name="&gt;&gt;label12.Name" xml:space="preserve">
+    <value>label12</value>
+  </data>
+  <data name="&gt;&gt;label12.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
+    <value>panelvid</value>
+  </data>
+  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnframeCounter.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="btnframeCounter.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
+  </data>
+  <data name="btnframeCounter.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Times New Roman, 14.25pt, style=Bold</value>
+  </data>
+  <data name="btnframeCounter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnframeCounter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>642, 99</value>
+  </data>
+  <data name="btnframeCounter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 40</value>
+  </data>
+  <data name="btnframeCounter.TabIndex" type="System.Int32, mscorlib">
+    <value>45</value>
+  </data>
+  <data name="btnframeCounter.Text" xml:space="preserve">
+    <value>Click</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Name" xml:space="preserve">
+    <value>btnframeCounter</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.Parent" xml:space="preserve">
+    <value>panelvid</value>
+  </data>
+  <data name="&gt;&gt;btnframeCounter.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="label11.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1864,7 +2020,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="checkThumb.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1897,7 +2053,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;checkThumb.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="btnvidThumb.Font" type="System.Drawing.Font, System.Drawing">
     <value>Times New Roman, 14.25pt, style=Bold</value>
@@ -1927,7 +2083,7 @@
     <value>panelvid</value>
   </data>
   <data name="&gt;&gt;btnvidThumb.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="btnIMG.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -2084,72 +2240,6 @@
   </data>
   <data name="&gt;&gt;checkimg.ZOrder" xml:space="preserve">
     <value>7</value>
-  </data>
-  <data name="radimgS.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="radimgS.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Times New Roman, 14.25pt, style=Bold</value>
-  </data>
-  <data name="radimgS.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="radimgS.Location" type="System.Drawing.Point, System.Drawing">
-    <value>219, 15</value>
-  </data>
-  <data name="radimgS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 26</value>
-  </data>
-  <data name="radimgS.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="radimgS.Text" xml:space="preserve">
-    <value>REALSR</value>
-  </data>
-  <data name="&gt;&gt;radimgS.Name" xml:space="preserve">
-    <value>radimgS</value>
-  </data>
-  <data name="&gt;&gt;radimgS.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;radimgS.Parent" xml:space="preserve">
-    <value>panel4</value>
-  </data>
-  <data name="&gt;&gt;radimgS.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="radvidS.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="radvidS.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Times New Roman, 14.25pt, style=Bold</value>
-  </data>
-  <data name="radvidS.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="radvidS.Location" type="System.Drawing.Point, System.Drawing">
-    <value>219, 15</value>
-  </data>
-  <data name="radvidS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 26</value>
-  </data>
-  <data name="radvidS.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="radvidS.Text" xml:space="preserve">
-    <value>REALSR</value>
-  </data>
-  <data name="&gt;&gt;radvidS.Name" xml:space="preserve">
-    <value>radvidS</value>
-  </data>
-  <data name="&gt;&gt;radvidS.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;radvidS.Parent" xml:space="preserve">
-    <value>panel2</value>
-  </data>
-  <data name="&gt;&gt;radvidS.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

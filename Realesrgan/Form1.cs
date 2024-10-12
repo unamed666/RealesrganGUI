@@ -411,12 +411,13 @@ namespace Realesrgan
             string modelz = string.Empty;
             string exeFilePath = string.Empty;
            
-            
+            // RealRS 
             if (radimgS.Checked == true)
             {
                 exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
                 modelz = " -m ";
             }
+            // Real-Esrgan
             else
             {
                 exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
@@ -838,6 +839,10 @@ namespace Realesrgan
             if (radimgX2.Checked == true)
             {
                 imgscale = "2";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesr-animevideov3";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
@@ -848,6 +853,10 @@ namespace Realesrgan
             if (radimgX3.Checked == true)
             {
                 imgscale = "3";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesr-animevideov3";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
@@ -858,6 +867,10 @@ namespace Realesrgan
             if (radimgX4.Checked == true)
             {
                 imgscale = "4";
+                if (radimgN.Checked == true)
+                {
+                    dataimg = "realesrgan-x4plus-anime";
+                }
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
@@ -950,7 +963,7 @@ namespace Realesrgan
         {
             panelimg.Enabled = false;
             panelvid.Enabled = false;
-            // 1. BONGKAR: Extract frames from the video or GIF
+            
             if (File.Exists($"{vidfileOut}\\{vidoutname}{vidfileExt}"))
             {
                 DialogResult result = MessageBox.Show("File already exist. Overwrite?", "Baca tah kontol", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -961,7 +974,6 @@ namespace Realesrgan
                     File.Delete($"{vidfileOut}\\{vidoutname}{vidfileExt}");
                     RunVideoProgram();
                 }
-                // Create the folder if it doesn't exist
 
             }
             else
@@ -972,10 +984,9 @@ namespace Realesrgan
             
         }
 
-        // Helper method to manage log files
-
         private async void RunVideoProgram()
         {
+            // 1. BONGKAR: Extract frames from the video or GIF
             string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
             string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
             string datasubmit;
@@ -1617,6 +1628,75 @@ namespace Realesrgan
                 datavid2 = "-S";
                 vidoutname = Path.GetFileNameWithoutExtension(vidfileName) + "-X" + vidscale + datavid2;
                 txtvidOutname.Text = vidoutname;
+            }
+        }
+
+        private async void btnframeCounter_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(txtvidPath.Text))
+
+            {
+                panelimg.Enabled = false;
+                panelvid.Enabled = false;
+                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 10, FontStyle.Bold);
+                btnframeCounter.Text = "Counting...";
+                txtvidEND.Text = null;
+                btnframeCounter.BackColor = Color.Transparent;
+                
+
+                // 1. BONGKAR: Extract frames from the video or GIF
+                string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
+                string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
+                string datasubmit;
+
+                if (vidfileExt == ".gif")
+                {
+                    datasubmit = $"-i {vidfilePath} -f image2 \"{tmpFrame}\\frame%08d.png\"";
+                }
+                else
+                {
+                    datasubmit = $"-i {vidfilePath} -qscale:v 1 -qmin 1 -qmax 1 -fps_mode cfr -f image2 \"{tmpFrame}\\frame%08d.png\"";
+                }
+
+                ProcessStartInfo ps = new ProcessStartInfo
+                {
+                    FileName = exeFilePath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Arguments = datasubmit,
+                };
+                // 4. CLEAR: Clean up temporary files
+                string datasubmit4 = $"del /S /q \"{tmpFrame}\"";
+
+                ProcessStartInfo ps4 = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Arguments = $"/c {datasubmit4}",
+                };
+                await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
+                await RunProcessAndCaptureOutput(ps, "\nExtracting frames... \n");
+                string[] files = Directory.GetFiles(tmpFrame);
+                int totalFiles = files.Length;
+                await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
+                btnframeCounter.Text = totalFiles.ToString();
+                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Total Frames : "+ totalFiles.ToString() + Environment.NewLine);                
+                panelimg.Enabled = true;
+                panelvid.Enabled = true;
+                btnframeCounter.BackColor = Color.Black;
+                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+                // Log file management
+                textBoxContent = txtvidEND.Text;
+                ManageLogFiles();
+            }
+            else
+            {
+                btnframeCounter.Text = "Click";
             }
         }
     }
