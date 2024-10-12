@@ -11,7 +11,9 @@ Based on Real-ESRGAN by xinntao. With Graphical User Interface for easy use and 
 
 [Download here](https://github.com/eroge69/RealesrganGUI/releases) <br></br><br></br>
 
-Original by xinntao [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn)
+Original Real-ESRGAN [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov-file#portable-executable-files-ncnn) <br></br><br></br>
+
+Original Realsr [HERE](https://github.com/jixiaozhong/RealSR?tab=readme-ov-file#update---may-26-2020)
 </h1>
 
 # USAGE
