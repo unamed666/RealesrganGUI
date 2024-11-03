@@ -381,6 +381,39 @@
   <data name="&gt;&gt;radvidS.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="radvidS.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="radvidS.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Times New Roman, 14.25pt, style=Bold</value>
+  </data>
+  <data name="radvidS.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="radvidS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>219, 15</value>
+  </data>
+  <data name="radvidS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>105, 26</value>
+  </data>
+  <data name="radvidS.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="radvidS.Text" xml:space="preserve">
+    <value>REALSR</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Name" xml:space="preserve">
+    <value>radvidS</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;radvidS.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;radvidS.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="radvidN.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
