@@ -963,7 +963,12 @@ namespace Realesrgan
         {
             panelimg.Enabled = false;
             panelvid.Enabled = false;
-            
+            btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 10, FontStyle.Bold);
+            btnframeCounter.Text = "Counting...";
+            txtvidEND.Text = null;
+            btnframeCounter.BackColor = Color.Transparent;
+
+
             if (File.Exists($"{vidfileOut}\\{vidoutname}{vidfileExt}"))
             {
                 DialogResult result = MessageBox.Show("File already exist. Overwrite?", "Baca tah kontol", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -990,7 +995,7 @@ namespace Realesrgan
             string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
             string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
             string datasubmit;
-           
+            
             if (vidfileExt == ".gif")
             {
                 datasubmit = $"-i {vidfilePath} -f image2 \"{tmpFrame}\\frame%08d.png\"";
@@ -1092,6 +1097,13 @@ namespace Realesrgan
             txtvidEND.Text = null;
             await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
             await RunProcessAndCaptureOutput(ps, "\nExtracting frames... \n");
+
+            //Frame Counter
+            string[] files = Directory.GetFiles(tmpFrame);
+            int totalFiles = files.Length;            
+            btnframeCounter.Text = totalFiles.ToString();
+            txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Total Frames : " + totalFiles.ToString() + Environment.NewLine);
+
             await RunProcessAndCaptureOutput(ps2, "\nUpscaling frames... \n");
             if (vidfileExt == ".gif")
             {
@@ -1182,7 +1194,8 @@ namespace Realesrgan
             {
                 File.Delete(destinationPath);
             }
-            
+            btnframeCounter.BackColor = Color.Black;
+            btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
             panelimg.Enabled = true;
             panelvid.Enabled = true;
             PlayCompletionSound();
