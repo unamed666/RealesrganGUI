@@ -716,8 +716,8 @@
             this.Controls.Add(this.checkimg);
             this.Controls.Add(this.checkSound);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.panelimg);
             this.Controls.Add(this.panelvid);
+            this.Controls.Add(this.panelimg);
             this.Cursor = System.Windows.Forms.Cursors.UpArrow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "gui1";
