@@ -1692,7 +1692,7 @@ namespace Realesrgan
                 btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
                 // Log file management
                 textBoxContent = txtvidEND.Text;
-                PlayCompletionSound(); 
+                PlayCompletionSound();
                 ManageLogFiles();
             }
             else
