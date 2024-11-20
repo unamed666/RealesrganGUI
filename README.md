@@ -15,7 +15,7 @@ Original Real-ESRGAN [HERE](https://github.com/xinntao/Real-ESRGAN?tab=readme-ov
 
 Original RealSR [HERE](https://github.com/jixiaozhong/RealSR?tab=readme-ov-file#update---may-26-2020)
 
-FFMPEG [HERE](https://github.com/BtbN/FFmpeg-Builds)
+FFmpeg [HERE](https://github.com/BtbN/FFmpeg-Builds)
 </h1>
 
 # USAGE
