@@ -54,10 +54,10 @@ FFmpeg [HERE](https://github.com/BtbN/FFmpeg-Builds)
 - CMD menu to see the process
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
 - You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
-<br><br><br><br><br><br><br>
+<br><br><br>
 > Visual Studio 2022 - Windows Form is used to make this program
 
- <br><br><br><br><br><br><br><br><br>
+ <br><br><br><br>
 ### Image menu
 ![IMAGE MENU](https://github.com/user-attachments/assets/10876dca-8fa3-4d89-bec2-c914ea4afa0e)
 
