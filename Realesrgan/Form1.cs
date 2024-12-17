@@ -1713,5 +1713,23 @@ namespace Realesrgan
                 btnframeCounter.Text = "Click";
             }
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string url = "https://github.com/eroge69/RealesrganGUI";
+            try
+            {
+                // Membuka URL di browser default
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true // Menyuruh sistem untuk membuka URL dengan browser
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Terjadi kesalahan: {ex.Message}");
+            }
+        }
     }
 }

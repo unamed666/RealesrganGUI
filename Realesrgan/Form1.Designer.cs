@@ -94,6 +94,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
             this.checkimg = new System.Windows.Forms.CheckBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -702,11 +703,20 @@
             this.checkimg.UseVisualStyleBackColor = true;
             this.checkimg.CheckedChanged += new System.EventHandler(this.checkSound_CheckedChanged);
             // 
+            // linkLabel1
+            // 
+            resources.ApplyResources(this.linkLabel1, "linkLabel1");
+            this.linkLabel1.LinkColor = System.Drawing.Color.Yellow;
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // gui1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.txtvidEND);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox1);
@@ -716,8 +726,8 @@
             this.Controls.Add(this.checkimg);
             this.Controls.Add(this.checkSound);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.panelvid);
             this.Controls.Add(this.panelimg);
+            this.Controls.Add(this.panelvid);
             this.Cursor = System.Windows.Forms.Cursors.UpArrow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "gui1";
@@ -807,6 +817,7 @@
         private System.Windows.Forms.RadioButton radvidS;
         private System.Windows.Forms.Button btnframeCounter;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
