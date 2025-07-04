@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MediaInfo;
 using SkiaSharp;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Realesrgan
 {
@@ -25,6 +26,7 @@ namespace Realesrgan
         string imgoutputfolder = string.Empty;
         string vidoutputfolder = string.Empty;
         string imgfilePath = string.Empty;
+        string imgfilePath2 = string.Empty;
         string imgfileName = string.Empty;
         string imgfileExt = string.Empty;
         string imgfileoutExt = string.Empty;
@@ -65,6 +67,7 @@ namespace Realesrgan
             InitializeComponent();
             InitializeApplication();
             LoadCheckboxState();
+            this.TopMost = checkTop.Checked;
         }
 
         private void LoadCheckboxState()
@@ -72,6 +75,7 @@ namespace Realesrgan
             // Set the checkbox state based on the stored setting
             checkSound.Checked = Properties.Settings.Default.SOUND;
             checkimg.Checked = Properties.Settings.Default.PREVIEW;
+            checkTop.Checked = Properties.Settings.Default.TOP;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -234,11 +238,6 @@ namespace Realesrgan
             btnimgOutdir.ForeColor = Color.Transparent;
         }
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
             if (radimgOutloc1.Checked)
@@ -304,6 +303,41 @@ namespace Realesrgan
                 MessageBox.Show($"Invalid file format: {imgfileExt}.","Error");
             }
         }
+
+        private void button1_Click_12(object sender, EventArgs e)
+        {
+            if (radimgOutloc1.Checked)
+            {
+                imgfileOut = imgdirPath;
+            }
+            if (radimgOutloc2.Checked)
+            {
+                imgfileOut = imgoutputfolder;
+            }
+
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            {               
+                dialog.IsFolderPicker = true;
+                dialog.Title = "Select Image Folder";
+                dialog.EnsurePathExists = true;
+                dialog.AllowNonFileSystemItems = false;
+
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    imgdirPath = dialog.FileName;
+                    txtimgPath2.Text = imgdirPath;
+                    imgfilePath2 = imgdirPath;
+
+                    // Ambil nama folder sebagai nama output
+                    imgfileName = new DirectoryInfo(imgdirPath).Name;
+
+                    imgfileOut = imgdirPath; // Atur sebagai output folder juga
+                }
+            }
+
+            // Tidak ada preview gambar karena folder tidak bisa dipreview seperti file.
+        }
+
         private void LoadWebpImage(string filePath)
         {
             try
@@ -525,6 +559,131 @@ namespace Realesrgan
 
         }
 
+
+        private async void submit_Click12(object sender, EventArgs e)
+        {
+            panelimg.Enabled = false;
+            panelimgBatch.Enabled = false;
+            panelvid.Enabled = false;
+            txtvidEND.Text = null;
+
+            string modelz = string.Empty;
+            string exeFilePath = string.Empty;
+
+            // Tentukan path executable
+            if (radimgS.Checked)
+            {
+                exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                modelz = " -m ";
+            }
+            else
+            {
+                exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                modelz = " -n ";
+            }
+
+            // Buat folder UPSCALED jika belum ada
+            string upscaledFolder = Path.Combine(imgfileOut, "UPSCALED");
+            if (!Directory.Exists(upscaledFolder))
+            {
+                Directory.CreateDirectory(upscaledFolder);
+            }
+
+            // Ambil semua gambar, skip yang berada di dalam folder UPSCALED
+            string[] validExtensions = { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+            var imageFiles = Directory.GetFiles(imgfilePath2, "*.*", SearchOption.AllDirectories)
+                .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
+                .Where(f => !f.StartsWith(upscaledFolder)) // Lewati file dalam UPSCALED
+                .ToArray();
+
+            foreach (string inputFile in imageFiles)
+            {
+                string filename = Path.GetFileName(inputFile);
+                string outputFile = Path.Combine(upscaledFolder, filename);
+
+                string datasubmit = $"-i \"{inputFile}\" -o \"{outputFile}\" {modelz} {dataimg} -s {imgscale}";
+                txtvidEND.AppendText(datasubmit + Environment.NewLine);
+
+                ProcessStartInfo ps = new ProcessStartInfo
+                {
+                    FileName = exeFilePath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    Arguments = datasubmit
+                };
+
+                using (Process process = new Process())
+                {
+                    process.StartInfo = ps;
+
+                    try
+                    {
+                        process.Start();
+
+                        process.OutputDataReceived += (outputSender, outputEvent) =>
+                        {
+                            if (!string.IsNullOrEmpty(outputEvent.Data))
+                            {
+                                txtvidEND.Invoke((MethodInvoker)delegate
+                                {
+                                    txtvidEND.AppendText(outputEvent.Data + Environment.NewLine);
+                                    txtvidEND.ScrollToCaret();
+                                });
+                            }
+                        };
+
+                        process.ErrorDataReceived += (errorSender, errorEvent) =>
+                        {
+                            if (!string.IsNullOrEmpty(errorEvent.Data))
+                            {
+                                txtvidEND.Invoke((MethodInvoker)delegate
+                                {
+                                    txtvidEND.AppendText(errorEvent.Data + Environment.NewLine);
+                                    txtvidEND.ScrollToCaret();
+                                });
+                            }
+                        };
+
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+
+                        await Task.Run(() => process.WaitForExit());
+
+                        txtvidEND.Invoke((MethodInvoker)delegate
+                        {
+                            if (File.Exists(outputFile))
+                            {
+                                txtvidEND.AppendText($"✔ Completed\n\n");
+                            }
+                            else
+                            {
+                                txtvidEND.AppendText($"✖ Failed: {filename}\n\n");
+                            }
+                            txtvidEND.ScrollToCaret();
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        txtvidEND.Invoke((MethodInvoker)delegate
+                        {
+                            txtvidEND.AppendText($"Error: {ex.Message}\n");
+                        });
+                    }
+                }
+            }
+
+            panelimg.Enabled = true;
+            panelimgBatch.Enabled = true;
+            panelvid.Enabled = true;
+            PlayCompletionSound();
+            textBoxContent = txtvidEND.Text;
+            ManageLogFiles();
+        }
+
+
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkvidFPS.Checked == true)
@@ -642,7 +801,15 @@ namespace Realesrgan
 
         private void radimgA_CheckedChanged_1(object sender, EventArgs e)
         {
-            
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgA)
+                    radimgA2.Checked = true;
+                else if (rb == radimgA2)
+                    radimgA.Checked = true;
+            }
             if (radimgA.Checked == true)
             {
                 radimgX2.Enabled = true;
@@ -656,6 +823,16 @@ namespace Realesrgan
 
         private void radimgN_CheckedChanged(object sender, EventArgs e)
         {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgN)
+                    radimgN2.Checked = true;
+                else if (rb == radimgN2)
+                    radimgN.Checked = true;
+            }
+
             if (radimgN.Checked == true)
             {
                 radimgX2.Enabled = false;
@@ -679,19 +856,6 @@ namespace Realesrgan
                 datavid2 = "-N";
                 vidoutname = Path.GetFileNameWithoutExtension(vidfileName) + "-X" + vidscale + datavid2;
                 txtvidOutname.Text = vidoutname;
-            }
-        }
-
-        private void txtimgPath_TextChanged(object sender, EventArgs e)
-        {
-            imgfilePath = '\u0022' + txtimgPath.Text + '\u0022';
-            if (radimgOutloc1.Checked)
-            {
-                imgfileOut = imgdirPath;
-            }
-            if (radimgOutloc2.Checked)
-            {
-                imgfileOut = imgoutputfolder;
             }
         }
 
@@ -836,6 +1000,16 @@ namespace Realesrgan
         }
         private void radimgX2_CheckedChanged(object sender, EventArgs e)
         {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgX2)
+                    radimgX22.Checked = true;
+                else if (rb == radimgX22)
+                    radimgX2.Checked = true;
+            }
+
             if (radimgX2.Checked == true)
             {
                 imgscale = "2";
@@ -846,10 +1020,21 @@ namespace Realesrgan
                 imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                 txtimgOutname.Text = imgoutname;
             }
+
         }
 
         private void radimgX3_CheckedChanged(object sender, EventArgs e)
         {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgX3)
+                    radimgX32.Checked = true;
+                else if (rb == radimgX32)
+                    radimgX3.Checked = true;
+            }
+
             if (radimgX3.Checked == true)
             {
                 imgscale = "3";
@@ -864,6 +1049,16 @@ namespace Realesrgan
 
         private void radimgX4_CheckedChanged(object sender, EventArgs e)
         {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgX4)
+                    radimgX42.Checked = true;
+                else if (rb == radimgX42)
+                    radimgX4.Checked = true;
+            }
+
             if (radimgX4.Checked == true)
             {
                 imgscale = "4";
@@ -1388,6 +1583,9 @@ namespace Realesrgan
         {
             btnIMG.FlatStyle = FlatStyle.Flat;
             btnVID.FlatStyle = FlatStyle.Popup;
+            btnSingle.FlatStyle = FlatStyle.Flat;
+            btnBatch.FlatStyle = FlatStyle.Popup;
+            panel3.BringToFront();
             panelimg.BringToFront();
             txtvidEND.BringToFront();
             button1.BringToFront();
@@ -1618,6 +1816,16 @@ namespace Realesrgan
 
         private void radimgS_CheckedChanged(object sender, EventArgs e)
         {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgS)
+                    radimgS2.Checked = true;
+                else if (rb == radimgS2)
+                    radimgS.Checked = true;
+            }
+
             if (radimgS.Checked == true)
             {
                 radimgX2.Enabled = false;
@@ -1731,5 +1939,45 @@ namespace Realesrgan
                 MessageBox.Show($"Terjadi kesalahan: {ex.Message}");
             }
         }
+
+        private void checkTop_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.TOP = checkTop.Checked;
+            this.TopMost = checkTop.Checked;
+        }
+
+        private void btnSingle_Click(object sender, EventArgs e)
+        {
+            panelimg.BringToFront();
+            txtvidEND.BringToFront();
+            button1.BringToFront();
+            btnSingle.FlatStyle = FlatStyle.Flat;
+            btnBatch.FlatStyle = FlatStyle.Popup;
+        }
+
+        private void btnBatch_Click(object sender, EventArgs e)
+        {
+            panelimgBatch.BringToFront();
+            txtvidEND.BringToFront();
+            button1.BringToFront();
+            btnSingle.FlatStyle = FlatStyle.Popup;
+            btnBatch.FlatStyle = FlatStyle.Flat;
+        }
+
+        private void RadioLinked_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+
+            if (rb.Checked)
+            {
+                if (rb == radimgX2) radimgX22.Checked = true;
+                else if (rb == radimgX3) radimgX32.Checked = true;
+                else if (rb == radimgX4) radimgX42.Checked = true;
+                else if (rb == radimgX22) radimgX2.Checked = true;
+                else if (rb == radimgX32) radimgX3.Checked = true;
+                else if (rb == radimgX42) radimgX4.Checked = true;
+            }
+        }
+
     }
 }

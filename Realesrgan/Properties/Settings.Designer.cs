@@ -46,5 +46,17 @@ namespace Realesrgan.Properties {
                 this["PREVIEW"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TOP {
+            get {
+                return ((bool)(this["TOP"]));
+            }
+            set {
+                this["TOP"] = value;
+            }
+        }
     }
 }
