@@ -305,7 +305,7 @@ namespace Realesrgan
         private void PlayCompletionSound()
         {
             // Set the path to your sound file (.wav)
-            string soundFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "completion_sound.wav");
+            string soundFilePath = Path.Combine(twoLevelsUp, "completion_sound.wav");
 
             // Use SoundPlayer to play the sound
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFilePath);
