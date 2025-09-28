@@ -84,6 +84,7 @@
             this.checkSound = new System.Windows.Forms.CheckBox();
             this.panelimg = new System.Windows.Forms.Panel();
             this.panelvid = new System.Windows.Forms.Panel();
+            this.labelHeavy = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.btnframeCounter = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
@@ -102,9 +103,12 @@
             this.btnSingle = new System.Windows.Forms.Button();
             this.panelimgBatch = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
+            this.btnEsTestbatch = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.button3 = new System.Windows.Forms.Button();
+            this.btnimgcounter = new System.Windows.Forms.Button();
             this.btnimgFind2 = new System.Windows.Forms.Button();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.txtimgPath2 = new System.Windows.Forms.TextBox();
@@ -119,6 +123,10 @@
             this.radimgX42 = new System.Windows.Forms.RadioButton();
             this.radimgX32 = new System.Windows.Forms.RadioButton();
             this.radimgX22 = new System.Windows.Forms.RadioButton();
+            this.txtTimer = new System.Windows.Forms.TextBox();
+            this.txtPred = new System.Windows.Forms.TextBox();
+            this.btnEsTestvid = new System.Windows.Forms.Button();
+            this.blankblack = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -613,6 +621,8 @@
             // panelvid
             // 
             this.panelvid.BackColor = System.Drawing.Color.Black;
+            this.panelvid.Controls.Add(this.btnEsTestvid);
+            this.panelvid.Controls.Add(this.labelHeavy);
             this.panelvid.Controls.Add(this.label12);
             this.panelvid.Controls.Add(this.btnframeCounter);
             this.panelvid.Controls.Add(this.btnvidSubmit);
@@ -642,6 +652,12 @@
             this.panelvid.Name = "panelvid";
             this.panelvid.Paint += new System.Windows.Forms.PaintEventHandler(this.panelvid_Paint);
             // 
+            // labelHeavy
+            // 
+            resources.ApplyResources(this.labelHeavy, "labelHeavy");
+            this.labelHeavy.ForeColor = System.Drawing.Color.DimGray;
+            this.labelHeavy.Name = "labelHeavy";
+            // 
             // label12
             // 
             resources.ApplyResources(this.label12, "label12");
@@ -651,7 +667,7 @@
             // 
             // btnframeCounter
             // 
-            this.btnframeCounter.BackColor = System.Drawing.Color.Black;
+            this.btnframeCounter.BackColor = System.Drawing.Color.DimGray;
             resources.ApplyResources(this.btnframeCounter, "btnframeCounter");
             this.btnframeCounter.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.btnframeCounter.ForeColor = System.Drawing.Color.White;
@@ -789,9 +805,12 @@
             // 
             this.panelimgBatch.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.panelimgBatch.Controls.Add(this.button2);
+            this.panelimgBatch.Controls.Add(this.btnEsTestbatch);
             this.panelimgBatch.Controls.Add(this.label14);
+            this.panelimgBatch.Controls.Add(this.label18);
             this.panelimgBatch.Controls.Add(this.radioButton1);
             this.panelimgBatch.Controls.Add(this.button3);
+            this.panelimgBatch.Controls.Add(this.btnimgcounter);
             this.panelimgBatch.Controls.Add(this.btnimgFind2);
             this.panelimgBatch.Controls.Add(this.radioButton2);
             this.panelimgBatch.Controls.Add(this.txtimgPath2);
@@ -814,12 +833,29 @@
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.submit_Click12);
             // 
+            // btnEsTestbatch
+            // 
+            this.btnEsTestbatch.BackColor = System.Drawing.Color.DimGray;
+            this.btnEsTestbatch.Cursor = System.Windows.Forms.Cursors.Cross;
+            resources.ApplyResources(this.btnEsTestbatch, "btnEsTestbatch");
+            this.btnEsTestbatch.ForeColor = System.Drawing.Color.White;
+            this.btnEsTestbatch.Name = "btnEsTestbatch";
+            this.btnEsTestbatch.UseVisualStyleBackColor = false;
+            this.btnEsTestbatch.Click += new System.EventHandler(this.btnEsTestbatch_Click);
+            // 
             // label14
             // 
             resources.ApplyResources(this.label14, "label14");
             this.label14.BackColor = System.Drawing.Color.Transparent;
             this.label14.ForeColor = System.Drawing.Color.Transparent;
             this.label14.Name = "label14";
+            // 
+            // label18
+            // 
+            resources.ApplyResources(this.label18, "label18");
+            this.label18.BackColor = System.Drawing.Color.Transparent;
+            this.label18.ForeColor = System.Drawing.Color.Transparent;
+            this.label18.Name = "label18";
             // 
             // radioButton1
             // 
@@ -843,6 +879,15 @@
             this.button3.Name = "button3";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // btnimgcounter
+            // 
+            this.btnimgcounter.BackColor = System.Drawing.Color.Black;
+            resources.ApplyResources(this.btnimgcounter, "btnimgcounter");
+            this.btnimgcounter.Cursor = System.Windows.Forms.Cursors.AppStarting;
+            this.btnimgcounter.ForeColor = System.Drawing.Color.White;
+            this.btnimgcounter.Name = "btnimgcounter";
+            this.btnimgcounter.UseVisualStyleBackColor = false;
             // 
             // btnimgFind2
             // 
@@ -975,12 +1020,42 @@
             this.radimgX22.UseVisualStyleBackColor = false;
             this.radimgX22.CheckedChanged += new System.EventHandler(this.radimgX2_CheckedChanged);
             // 
+            // txtTimer
+            // 
+            resources.ApplyResources(this.txtTimer, "txtTimer");
+            this.txtTimer.ForeColor = System.Drawing.Color.Brown;
+            this.txtTimer.Name = "txtTimer";
+            // 
+            // txtPred
+            // 
+            resources.ApplyResources(this.txtPred, "txtPred");
+            this.txtPred.ForeColor = System.Drawing.Color.Brown;
+            this.txtPred.Name = "txtPred";
+            // 
+            // btnEsTestvid
+            // 
+            this.btnEsTestvid.BackColor = System.Drawing.Color.DimGray;
+            this.btnEsTestvid.Cursor = System.Windows.Forms.Cursors.Cross;
+            resources.ApplyResources(this.btnEsTestvid, "btnEsTestvid");
+            this.btnEsTestvid.ForeColor = System.Drawing.Color.White;
+            this.btnEsTestvid.Name = "btnEsTestvid";
+            this.btnEsTestvid.UseVisualStyleBackColor = false;
+            this.btnEsTestvid.Click += new System.EventHandler(this.btnEsTestvid_Click);
+            // 
+            // blankblack
+            // 
+            this.blankblack.BackColor = System.Drawing.Color.Black;
+            resources.ApplyResources(this.blankblack, "blankblack");
+            this.blankblack.ForeColor = System.Drawing.Color.Black;
+            this.blankblack.Name = "blankblack";
+            // 
             // gui1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.blankblack);
+            this.Controls.Add(this.txtTimer);
             this.Controls.Add(this.checkTop);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.txtvidEND);
@@ -993,10 +1068,13 @@
             this.Controls.Add(this.checkSound);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelimg);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panelvid);
             this.Controls.Add(this.panelimgBatch);
+            this.Controls.Add(this.txtPred);
             this.Cursor = System.Windows.Forms.Cursors.UpArrow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "gui1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -1117,6 +1195,14 @@
         private System.Windows.Forms.RadioButton radimgX42;
         private System.Windows.Forms.RadioButton radimgX32;
         private System.Windows.Forms.RadioButton radimgX22;
+        private System.Windows.Forms.Label labelHeavy;
+        private System.Windows.Forms.TextBox txtTimer;
+        private System.Windows.Forms.TextBox txtPred;
+        private System.Windows.Forms.Button btnEsTestbatch;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button btnimgcounter;
+        private System.Windows.Forms.Button btnEsTestvid;
+        private System.Windows.Forms.Label blankblack;
     }
 }
 

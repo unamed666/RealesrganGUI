@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MediaInfo;
 using SkiaSharp;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Threading;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Realesrgan
 {
@@ -22,7 +21,6 @@ namespace Realesrgan
     {
 
         //data isian
-        string currentdir = Directory.GetCurrentDirectory();
         string imgoutputfolder = string.Empty;
         string vidoutputfolder = string.Empty;
         string imgfilePath = string.Empty;
@@ -52,7 +50,7 @@ namespace Realesrgan
         string vidlength2 = string.Empty;
         string customcmd = string.Empty;
         string twoLevelsUp = Directory.GetCurrentDirectory();
-    
+
         string folderPath = string.Empty;
         float frameDelay;
         float frameDelay2 = 50;
@@ -62,6 +60,20 @@ namespace Realesrgan
         string destinationPath = string.Empty;
         string palettePath = string.Empty;
 
+        int framedetector = 0;
+        int framedetector2 = 0;
+        int framedetector3 = 0;
+        string modelz = string.Empty;
+        string largestimg = string.Empty;
+        int durasivideo;
+
+        string exeFilePath = string.Empty;
+        string exeFilePath2 = string.Empty;
+
+        int closing = 1;
+
+        private readonly Stopwatch sw = new Stopwatch();
+        private CancellationTokenSource _cts;
         public gui1()
         {
             InitializeComponent();
@@ -70,6 +82,38 @@ namespace Realesrgan
             this.TopMost = checkTop.Checked;
         }
 
+        private async Task UpdateLoopAsync(CancellationToken token)
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    txtTimer.TextAlign = HorizontalAlignment.Left;
+                    txtTimer.Text = sw.Elapsed.ToString(@"d\.hh\:mm\:ss\.fff");
+                    await Task.Delay(10, token);
+                }
+            }
+            catch (OperationCanceledException) { /* normal saat dibatalkan */ }
+        }
+
+        private void TimerMulai()
+        {
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+
+            sw.Restart();
+            _ = UpdateLoopAsync(_cts.Token);   // mulai loop async (tidak blocking)
+            txtTimer.Text = sw.Elapsed.ToString(@"d\.hh\:mm\:ss\.fff");
+
+        }
+
+        private void TimerStop()
+        {
+            _cts?.Cancel();
+            sw.Stop();
+            txtTimer.Text = sw.Elapsed.ToString(@"d\.hh\:mm\:ss\.fff");
+        }
         private void LoadCheckboxState()
         {
             // Set the checkbox state based on the stored setting
@@ -78,20 +122,121 @@ namespace Realesrgan
             checkTop.Checked = Properties.Settings.Default.TOP;
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveCheckboxState();
             if (File.Exists(destinationPath))
             {
                 File.Delete(destinationPath);
             }
+            closing = 1;
+            await KillEXE();
+
+            if (closing == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
         }
-     
+        private async Task KillEXE()
+        {
+            // deteksi siapa yang sedang berjalan
+            var running = GetRunningTargets(exeFilePath, exeFilePath2);
+            if (running.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+                // tampilkan daftar lalu konfirmasi
+                var sb = new StringBuilder();
+                sb.Append("Program still running, Kill it?" + Environment.NewLine);
+                sb.AppendLine("Running Program:" + Environment.NewLine);
+                foreach (var name in running) sb.AppendLine(" - " + name + ".exe" + Environment.NewLine);
+                sb.AppendLine();
+
+
+                var res = MessageBox.Show(sb.ToString(), "Sia Babi",
+                                          MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                                          MessageBoxDefaultButton.Button2);
+
+                if (res == DialogResult.Yes)
+                {
+                    // kill hanya yang terdeteksi berjalan
+                    foreach (var name in running)
+                        KillProcessTreeByName(name);
+
+                    MessageBox.Show("KILLED", "Ngentot", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    closing = 0;
+                }
+
+            }
+
+        }
+
+        // --- helper: cari nama proses dari path lalu cek apakah ada instance yang aktif ---
+        private static List<string> GetRunningTargets(params string[] exePaths)
+        {
+            var result = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var path in exePaths)
+            {
+                if (string.IsNullOrWhiteSpace(path)) continue;
+
+                var name = Path.GetFileNameWithoutExtension(path);
+                if (string.IsNullOrEmpty(name)) continue;
+                if (seen.Contains(name)) continue; // hindari duplikat
+                seen.Add(name);
+
+                try
+                {
+                    if (Process.GetProcessesByName(name).Length > 0)
+                        result.Add(name);
+                }
+                catch { /* abaikan error akses */ }
+            }
+            return result;
+        }
+
+        // --- kill tree proses berbasis nama (taskkill dulu, lalu fallback) ---
+        private static void KillProcessTreeByName(string processName)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "taskkill",
+                    Arguments = "/IM " + processName + ".exe /F /T",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+                using (var p = Process.Start(psi))
+                {
+                    p.WaitForExit(5000);
+                    if (p.ExitCode == 0) return; // sukses
+                }
+            }
+            catch { /* lanjut fallback */ }
+
+            foreach (var proc in Process.GetProcessesByName(processName))
+            {
+                try { proc.Kill(); proc.WaitForExit(3000); }
+                catch { }
+                finally { proc.Dispose(); }
+            }
+        }
+
         private void SaveCheckboxState()
         {
             // Save the current state of the checkbox
             Properties.Settings.Default.SOUND = checkSound.Checked;
-            Properties.Settings.Default.PREVIEW=checkimg.Checked;
+            Properties.Settings.Default.PREVIEW = checkimg.Checked;
             Properties.Settings.Default.Save();
         }
 
@@ -100,7 +245,7 @@ namespace Realesrgan
             radimgA.Checked = true;
             radimgX4.Checked = true;
             radimgOutloc1.Checked = true;
-           
+
             string imgoutputFolderPath = Path.Combine(twoLevelsUp, "Output", "Images");
             if (!Directory.Exists(imgoutputFolderPath))
             {
@@ -112,7 +257,7 @@ namespace Realesrgan
             radvidA.Checked = true;
             radvidX4.Checked = true;
             radvidOutloc1.Checked = true;
-            
+
             string vidoutputFolderPath = Path.Combine(twoLevelsUp, "Output", "Videos");
             if (!Directory.Exists(vidoutputFolderPath))
             {
@@ -132,7 +277,7 @@ namespace Realesrgan
 
             txtFPS.KeyPress += txtFps_KeyPress;
             txtvidLength.KeyPress += txtFps_KeyPress;
-            
+
 
         }
 
@@ -159,15 +304,15 @@ namespace Realesrgan
 
         private void PlayCompletionSound()
         {
-                // Set the path to your sound file (.wav)
-                string soundFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "completion_sound.wav");
+            // Set the path to your sound file (.wav)
+            string soundFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "completion_sound.wav");
 
-                // Use SoundPlayer to play the sound
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFilePath);
-                if (checkSound.Checked == true)
-                {
-                    player.Play();
-                }  
+            // Use SoundPlayer to play the sound
+            System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFilePath);
+            if (checkSound.Checked == true)
+            {
+                player.Play();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -205,7 +350,7 @@ namespace Realesrgan
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkimgOutname.CheckState == CheckState.Checked) 
+            if (checkimgOutname.CheckState == CheckState.Checked)
             {
                 txtimgOutname.Enabled = true;
             }
@@ -223,7 +368,7 @@ namespace Realesrgan
 
         private void button9_Click(object sender, EventArgs e)
         {
-           
+
 
             if (radimgOutloc1.Checked)
             {
@@ -260,9 +405,9 @@ namespace Realesrgan
             {
                 imgfileOut = imgoutputfolder;
             }
-            
+
             using (OpenFileDialog ofd = new OpenFileDialog())
-            {                
+            {
                 ofd.Filter = "All files (*.*)|*.*|Image Files|*.jpg;*.jpeg;*.png;*.webp";
                 ofd.FilterIndex = 2;
                 ofd.RestoreDirectory = true;
@@ -278,13 +423,14 @@ namespace Realesrgan
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    imgfilePath = '\u0022' +  ofd.FileName + '\u0022';
+                    txtvidEND.Text = null;
+                    imgfilePath = '\u0022' + ofd.FileName + '\u0022';
                     txtimgPath.Text = ofd.FileName;
-                    imgdirPath = Path.GetDirectoryName(txtimgPath.Text);                    
+                    imgdirPath = Path.GetDirectoryName(txtimgPath.Text);
                     imgfileName = ofd.SafeFileName;
                     imgoutname = Path.GetFileNameWithoutExtension(imgfileName) + "-X" + imgscale + dataimg2;
                     txtimgOutname.Text = imgoutname;
-                    imgfileExt = Path.GetExtension(txtimgPath.Text);   
+                    imgfileExt = Path.GetExtension(txtimgPath.Text);
                 }
             }
             //IMAGE PREVIEW
@@ -300,7 +446,7 @@ namespace Realesrgan
             }
             else
             {
-                MessageBox.Show($"Invalid file format: {imgfileExt}.","Error");
+                MessageBox.Show($"Invalid file format: {imgfileExt}.", "Error");
             }
         }
 
@@ -316,7 +462,7 @@ namespace Realesrgan
             }
 
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
-            {               
+            {
                 dialog.IsFolderPicker = true;
                 dialog.Title = "Select Image Folder";
                 dialog.EnsurePathExists = true;
@@ -324,9 +470,11 @@ namespace Realesrgan
 
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
+                    txtvidEND.Text = null;
                     imgdirPath = dialog.FileName;
                     txtimgPath2.Text = imgdirPath;
                     imgfilePath2 = imgdirPath;
+                    HitungGambar();
 
                     // Ambil nama folder sebagai nama output
                     imgfileName = new DirectoryInfo(imgdirPath).Name;
@@ -425,7 +573,7 @@ namespace Realesrgan
             catch (Exception ex)
             {
                 MessageBox.Show($"Unexpected error: {ex.Message}");
-            }   
+            }
         }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -439,171 +587,25 @@ namespace Realesrgan
 
         private async void submit_Click(object sender, EventArgs e)
         {
-            panelimg.Enabled = false;
-            panelvid.Enabled = false;
-            txtvidEND.Text = null;
-            string modelz = string.Empty;
-            string exeFilePath = string.Empty;
-           
-            // RealRS 
-            if (radimgS.Checked == true)
+            if (imgfilePath != string.Empty)
             {
-                exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
-                modelz = " -m ";
-            }
-            // Real-Esrgan
-            else
-            {
-                exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
-                modelz = " -n ";
-            }
-            string datasubmit = " -i " + imgfilePath + modelz + dataimg
-               + " -s " + imgscale + " -o " + '\u0022' + imgfileOut + "\\" + imgoutname + imgfileExt + '\u0022';
-            ProcessStartInfo ps = new ProcessStartInfo
-            {
-                FileName = exeFilePath,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments =datasubmit             
-            };
-
-            using (Process process = new Process())
-            {
-                process.StartInfo = ps;
-
-                try
+                panelimg.Enabled = false;
+                panelimgBatch.Enabled = false;
+                panelvid.Enabled = false;
+                // RealRS 
+                if (radimgS.Checked == true)
                 {
-                    process.Start();
-
-                    // Begin reading output and error asynchronously
-                    process.OutputDataReceived += (outputSender, outputEvent) =>
-                    {
-                        if (!string.IsNullOrEmpty(outputEvent.Data))
-                        {
-                            // Use Invoke to update the TextBox safely from another thread
-                            txtvidEND.Invoke((MethodInvoker)delegate
-                            {
-                                txtvidEND.AppendText(outputEvent.Data + Environment.NewLine);
-                                txtvidEND.SelectionStart = txtvidEND.Text.Length;
-                                txtvidEND.ScrollToCaret();
-                            });
-                        }
-                    };
-
-                    process.ErrorDataReceived += (errorSender, errorEvent) =>
-                    {
-                        if (!string.IsNullOrEmpty(errorEvent.Data))
-                        {
-                            // Use Invoke to update the TextBox safely from another thread
-                            txtvidEND.Invoke((MethodInvoker)delegate
-                            {
-                                txtvidEND.AppendText(errorEvent.Data + Environment.NewLine);
-                                txtvidEND.SelectionStart = txtvidEND.Text.Length;
-                                txtvidEND.ScrollToCaret();
-                            });
-                        }
-                    };
-
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-
-                    await Task.Run(() => process.WaitForExit());  // Run WaitForExit on a background thread
-
-                    txtvidEND.Invoke((MethodInvoker)delegate
-                    {
-                        if (File.Exists($"{imgfileOut}\\{imgoutname}{imgfileExt}"))
-                        {
-                            txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process completed successfully." + Environment.NewLine);
-                            btnimgOutdir.BackColor = Color.Lime;
-                            btnimgOutdir.ForeColor = Color.Black;
-                        }
-                        else
-                        {
-                            txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process failed, check Log file." + Environment.NewLine);
-                            button1.BackColor = Color.Red;
-                        }
-                        txtvidEND.SelectionStart = txtvidEND.Text.Length;
-                        txtvidEND.ScrollToCaret();
-                    });
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                    modelz = " -m ";
                 }
-                catch (Exception ex)
+                // Real-Esrgan
+                else
                 {
-                    txtvidEND.Invoke((MethodInvoker)delegate
-                    {
-                        txtvidEND.Text = $"Error: {ex.Message}";
-                    });
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                    modelz = " -n ";
                 }
-            }
-            imgfileoutExt = Path.GetExtension(imgfileOut + "\\" + imgoutname + imgfileExt);
-            //Preview Output ver
-            //IMAGE PREVIEW
-            if (imgfileoutExt == ".webp")
-            {
-                // Handle .webp images using SkiaSharp
-                LoadWebpImage(imgfileOut + "\\" + imgoutname + imgfileExt);
-            }
-            else if (imgfileoutExt == ".gif" || imgfileoutExt == ".jpg" || imgfileoutExt == ".png")
-            {
-                // Handle .gif, .jpg, .png images using the built-in .NET Image class
-                LoadStandardImage(imgfileOut + "\\" + imgoutname + imgfileExt);
-            }
-            panelimg.Enabled = true;
-            panelvid.Enabled = true;
-            PlayCompletionSound();
-            textBoxContent = txtvidEND.Text;
-            ManageLogFiles();
-
-
-        }
-
-
-        private async void submit_Click12(object sender, EventArgs e)
-        {
-            panelimg.Enabled = false;
-            panelimgBatch.Enabled = false;
-            panelvid.Enabled = false;
-            txtvidEND.Text = null;
-
-            string modelz = string.Empty;
-            string exeFilePath = string.Empty;
-
-            // Tentukan path executable
-            if (radimgS.Checked)
-            {
-                exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
-                modelz = " -m ";
-            }
-            else
-            {
-                exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
-                modelz = " -n ";
-            }
-
-            // Buat folder UPSCALED jika belum ada
-            string upscaledFolder = Path.Combine(imgfileOut, "UPSCALED");
-            if (!Directory.Exists(upscaledFolder))
-            {
-                Directory.CreateDirectory(upscaledFolder);
-            }
-
-            // Ambil semua gambar, skip yang berada di dalam folder UPSCALED
-            string[] validExtensions = { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
-            var imageFiles = Directory.GetFiles(imgfilePath2, "*.*", SearchOption.AllDirectories)
-                .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
-                .Where(f => !f.StartsWith(upscaledFolder)) // Lewati file dalam UPSCALED
-                .ToArray();
-
-            foreach (string inputFile in imageFiles)
-            {
-                string filename = Path.GetFileName(inputFile);
-                string outputFile = Path.Combine(upscaledFolder, filename);
-
-                string datasubmit = $"-i \"{inputFile}\" -o \"{outputFile}\" {modelz} {dataimg} -s {imgscale}";
-                txtvidEND.AppendText(datasubmit + Environment.NewLine);
-
+                string datasubmit = " -i " + imgfilePath + modelz + dataimg
+                   + " -s " + imgscale + " -o " + '\u0022' + imgfileOut + "\\" + imgoutname + imgfileExt + '\u0022';
                 ProcessStartInfo ps = new ProcessStartInfo
                 {
                     FileName = exeFilePath,
@@ -614,22 +616,25 @@ namespace Realesrgan
                     WindowStyle = ProcessWindowStyle.Hidden,
                     Arguments = datasubmit
                 };
-
+                TimerMulai();
                 using (Process process = new Process())
                 {
-                    process.StartInfo = ps;
+                    process.StartInfo = ps;                    
 
                     try
                     {
                         process.Start();
 
+                        // Begin reading output and error asynchronously
                         process.OutputDataReceived += (outputSender, outputEvent) =>
                         {
                             if (!string.IsNullOrEmpty(outputEvent.Data))
                             {
+                                // Use Invoke to update the TextBox safely from another thread
                                 txtvidEND.Invoke((MethodInvoker)delegate
                                 {
                                     txtvidEND.AppendText(outputEvent.Data + Environment.NewLine);
+                                    txtvidEND.SelectionStart = txtvidEND.Text.Length;
                                     txtvidEND.ScrollToCaret();
                                 });
                             }
@@ -639,9 +644,11 @@ namespace Realesrgan
                         {
                             if (!string.IsNullOrEmpty(errorEvent.Data))
                             {
+                                // Use Invoke to update the TextBox safely from another thread
                                 txtvidEND.Invoke((MethodInvoker)delegate
                                 {
                                     txtvidEND.AppendText(errorEvent.Data + Environment.NewLine);
+                                    txtvidEND.SelectionStart = txtvidEND.Text.Length;
                                     txtvidEND.ScrollToCaret();
                                 });
                             }
@@ -650,18 +657,22 @@ namespace Realesrgan
                         process.BeginOutputReadLine();
                         process.BeginErrorReadLine();
 
-                        await Task.Run(() => process.WaitForExit());
+                        await Task.Run(() => process.WaitForExit());  // Run WaitForExit on a background thread
 
                         txtvidEND.Invoke((MethodInvoker)delegate
                         {
-                            if (File.Exists(outputFile))
+                            if (File.Exists($"{imgfileOut}\\{imgoutname}{imgfileExt}"))
                             {
-                                txtvidEND.AppendText($"✔ Completed\n\n");
+                                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process completed successfully." + Environment.NewLine);
+                                btnimgOutdir.BackColor = Color.Lime;
+                                btnimgOutdir.ForeColor = Color.Black;
                             }
                             else
                             {
-                                txtvidEND.AppendText($"✖ Failed: {filename}\n\n");
+                                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process failed, check Log file." + Environment.NewLine);
+                                button1.BackColor = Color.Red;
                             }
+                            txtvidEND.SelectionStart = txtvidEND.Text.Length;
                             txtvidEND.ScrollToCaret();
                         });
                     }
@@ -669,26 +680,173 @@ namespace Realesrgan
                     {
                         txtvidEND.Invoke((MethodInvoker)delegate
                         {
-                            txtvidEND.AppendText($"Error: {ex.Message}\n");
+                            txtvidEND.Text = $"Error: {ex.Message}";
                         });
                     }
                 }
-            }
+                TimerStop();
+                imgfileoutExt = Path.GetExtension(imgfileOut + "\\" + imgoutname + imgfileExt);
+                //Preview Output ver
+                //IMAGE PREVIEW
+                if (imgfileoutExt == ".webp")
+                {
+                    // Handle .webp images using SkiaSharp
+                    LoadWebpImage(imgfileOut + "\\" + imgoutname + imgfileExt);
+                }
+                else if (imgfileoutExt == ".gif" || imgfileoutExt == ".jpg" || imgfileoutExt == ".png")
+                {
+                    // Handle .gif, .jpg, .png images using the built-in .NET Image class
+                    LoadStandardImage(imgfileOut + "\\" + imgoutname + imgfileExt);
+                }
+                panelimg.Enabled = true;
+                panelimgBatch.Enabled = true;
+                panelvid.Enabled = true;
+                PlayCompletionSound();
+                textBoxContent = txtvidEND.Text;
+                ManageLogFiles();
 
-            panelimg.Enabled = true;
-            panelimgBatch.Enabled = true;
-            panelvid.Enabled = true;
-            PlayCompletionSound();
-            textBoxContent = txtvidEND.Text;
-            ManageLogFiles();
+            }
+            else
+            {
+                MessageBox.Show("Please select a file first.", "No File Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+
+        private async void submit_Click12(object sender, EventArgs e)
+        {
+            if (imgdirPath != string.Empty)
+            {
+
+                panelimgBatch.Enabled = false;
+                panelvid.Enabled = false;
+
+
+                string modelz = string.Empty;
+                // Tentukan path executable
+                if (radimgS.Checked)
+                {
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                    modelz = " -m ";
+                }
+                else
+                {
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                    modelz = " -n ";
+                }
+
+                // Buat folder UPSCALED jika belum ada
+                string upscaledFolder = Path.Combine(imgfileOut, "UPSCALED");
+                if (!Directory.Exists(upscaledFolder))
+                {
+                    Directory.CreateDirectory(upscaledFolder);
+                }
+
+                // Ambil semua gambar, skip yang berada di dalam folder UPSCALED
+                string[] validExtensions = { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+                var imageFiles = Directory.GetFiles(imgfilePath2, "*.*", SearchOption.AllDirectories)
+                    .Where(f => validExtensions.Contains(Path.GetExtension(f).ToLower()))
+                    .Where(f => !f.StartsWith(upscaledFolder)) // Lewati file dalam UPSCALED
+                    .ToArray();
+                TimerMulai();
+                foreach (string inputFile in imageFiles)
+                {
+                    string filename = Path.GetFileName(inputFile);
+                    string outputFile = Path.Combine(upscaledFolder, filename);
+
+                    string datasubmit = $"-i \"{inputFile}\" -o \"{outputFile}\" {modelz} {dataimg} -s {imgscale}";
+                    txtvidEND.AppendText(datasubmit + Environment.NewLine);
+
+                    ProcessStartInfo ps = new ProcessStartInfo
+                    {
+                        FileName = exeFilePath,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Arguments = datasubmit
+                    };
+
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo = ps;
+
+                        try
+                        {
+                            process.Start();
+                            process.OutputDataReceived += (outputSender, outputEvent) =>
+                            {
+                                if (!string.IsNullOrEmpty(outputEvent.Data))
+                                {
+                                    txtvidEND.Invoke((MethodInvoker)delegate
+                                    {
+                                        txtvidEND.AppendText(outputEvent.Data + Environment.NewLine);
+                                        txtvidEND.ScrollToCaret();
+                                    });
+                                }
+                            };
+
+                            process.ErrorDataReceived += (errorSender, errorEvent) =>
+                            {
+                                if (!string.IsNullOrEmpty(errorEvent.Data))
+                                {
+                                    txtvidEND.Invoke((MethodInvoker)delegate
+                                    {
+                                        txtvidEND.AppendText(errorEvent.Data + Environment.NewLine);
+                                        txtvidEND.ScrollToCaret();
+                                    });
+                                }
+                            };
+
+                            process.BeginOutputReadLine();
+                            process.BeginErrorReadLine();
+
+                            await Task.Run(() => process.WaitForExit());
+
+
+                            txtvidEND.Invoke((MethodInvoker)delegate
+                            {
+                                if (File.Exists(outputFile))
+                                {
+                                    txtvidEND.AppendText($"✔ Completed\n\n");
+                                }
+                                else
+                                {
+                                    txtvidEND.AppendText($"✖ Failed: {filename}\n\n");
+                                }
+                                txtvidEND.ScrollToCaret();
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            txtvidEND.Invoke((MethodInvoker)delegate
+                            {
+                                txtvidEND.AppendText($"Error: {ex.Message}\n");
+                            });
+                        }
+                    }
+                }
+                TimerStop();
+                panelimg.Enabled = true;
+                panelimgBatch.Enabled = true;
+                panelvid.Enabled = true;
+                PlayCompletionSound();
+                textBoxContent = txtvidEND.Text;
+                ManageLogFiles();
+            }
+            else
+            {
+                MessageBox.Show("Please select a folder first.", "No Folder Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkvidFPS.Checked == true)
-            {   
-                txtFPS.Enabled = true;               
+            {
+                txtFPS.Enabled = true;
             }
             if (checkvidFPS.Checked == false)
             {
@@ -712,18 +870,18 @@ namespace Realesrgan
             }
             if (checkvidLength.Checked == false)
             {
-                txtvidLength.Enabled= false;
+                txtvidLength.Enabled = false;
                 txtvidLength.Text = vidlength2;
                 vidLength = vidlength2;
             }
             if (checkvidCus.Checked == true)
             {
-                txtvidCus.Enabled= true;
+                txtvidCus.Enabled = true;
                 customcmd = txtvidCus.Text;
             }
             if (checkvidCus.Checked == false)
             {
-                txtvidCus.Enabled =false;
+                txtvidCus.Enabled = false;
                 customcmd = string.Empty;
             }
         }
@@ -776,8 +934,8 @@ namespace Realesrgan
         }
 
         private void txtvidCus_TextChanged(object sender, EventArgs e)
-        {   
-                customcmd = txtvidCus.Text;
+        {
+            customcmd = txtvidCus.Text;
         }
 
         private void txtvidLengthX_TextChanged(object sender, EventArgs e)
@@ -852,7 +1010,7 @@ namespace Realesrgan
                 radvidX2.Enabled = false;
                 radvidX3.Enabled = false;
                 radvidX4.Checked = true;
-                datavid = "realesrgan-x4plus";
+                datavid = "realesrgan-x4plusv3";
                 datavid2 = "-N";
                 vidoutname = Path.GetFileNameWithoutExtension(vidfileName) + "-X" + vidscale + datavid2;
                 txtvidOutname.Text = vidoutname;
@@ -861,8 +1019,16 @@ namespace Realesrgan
 
         private void btnvidFind_Click(object sender, EventArgs e)
         {
+            btnframeCounter.Text = "Click";
+            btnframeCounter.BackColor = Color.DimGray;
+            btnframeCounter.FlatStyle = FlatStyle.Standard;
+            txtTimer.TextAlign = HorizontalAlignment.Center;
+            txtTimer.Text = "Counter";
+            txtPred.TextAlign = HorizontalAlignment.Center;
+            txtPred.Text = "Estimate";
             using (OpenFileDialog ofd = new OpenFileDialog())
-            {                
+            {
+                txtvidEND.Text = null;
                 ofd.Filter = "All files (*.*)|*.*|Video Files|*.mp4;*.mkv;*.3gp;*.gif";
                 ofd.FilterIndex = 2;
                 ofd.RestoreDirectory = true;
@@ -898,7 +1064,7 @@ namespace Realesrgan
                     if (vidfileExt == ".mp4" || vidfileExt == ".mkv")
                     {
                         label11.Visible = true;
-                        checkThumb.Enabled = true;
+                        checkThumb.Visible = true;
                         btnvidThumb.Visible = true;
                         if (File.Exists(thumbpath))
                         {
@@ -917,27 +1083,27 @@ namespace Realesrgan
                     }
                     else
                     {
-                       
+
                         if (vidfileExt == ".gif")
                         {
                             LoadStandardImage(txtvidPath.Text);
                         }
-                        else 
+                        else
                         {
                             if (pictureBox1.Image != null)
                             {
                                 pictureBox1.Image.Dispose();
                                 pictureBox1.Image = null;
-                            } 
+                            }
                         }
                         btnvidThumb.Visible = false;
                         checkThumb.Checked = false;
                         label11.Visible = false;
-                        checkThumb.Enabled = false;
+                        checkThumb.Visible = false;
                     }
 
-                        //FPS
-                        MediaInfo.MediaInfo mi = new MediaInfo.MediaInfo();
+                    //FPS
+                    MediaInfo.MediaInfo mi = new MediaInfo.MediaInfo();
                     mi.Open(ofd.FileName);
                     vidFPS = mi.Get(MediaInfo.StreamKind.Video, 0, "FrameRate");
                     if (string.IsNullOrEmpty(vidFPS) || vidFPS == "0")
@@ -947,9 +1113,9 @@ namespace Realesrgan
 
                     // Assign the FPS to the TextBox
                     if (vidfileExt == ".gif")
-                    {                        
+                    {
                         frameDelay = frameDelay2;
-                        txtFPS.Text = frameDelay2.ToString();                       
+                        txtFPS.Text = frameDelay2.ToString();
                         checkvidLength.Visible = false;
                         txtvidLength.Visible = false;
                         checkvidFPS.Text = "Delay :";
@@ -965,7 +1131,7 @@ namespace Realesrgan
                             checkvidFPS.Text = "FPS :";
                         }
                     }
-                   
+
 
                     //Length
                     if (vidfileExt == ".gif")
@@ -1114,7 +1280,7 @@ namespace Realesrgan
         }
 
         private void txtvidOutname_TextChanged(object sender, EventArgs e)
-        {   
+        {
             if (txtvidOutname.Enabled == true)
             {
                 vidoutname = txtvidOutname.Text;
@@ -1156,32 +1322,60 @@ namespace Realesrgan
         }
         private void btnvidSubmit_Click(object sender, EventArgs e)
         {
-            panelimg.Enabled = false;
-            panelvid.Enabled = false;
-            btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 10, FontStyle.Bold);
-            btnframeCounter.Text = "Counting...";
-            txtvidEND.Text = null;
-            btnframeCounter.BackColor = Color.Transparent;
-
-
-            if (File.Exists($"{vidfileOut}\\{vidoutname}{vidfileExt}"))
+            if (vidfilePath != string.Empty)
             {
-                DialogResult result = MessageBox.Show("File already exist. Overwrite?", "Baca tah kontol", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                // Check the user's response
-                if (result == DialogResult.Yes)
+
+
+                if (File.Exists($"{vidfileOut}\\{vidoutname}{vidfileExt}"))
                 {
-                    File.Delete($"{vidfileOut}\\{vidoutname}{vidfileExt}");
-                    RunVideoProgram();
-                }
+                    DialogResult result = MessageBox.Show("File already exist. Overwrite?", "Baca tah kontol", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
+                    // Check the user's response
+                    if (result == DialogResult.Yes)
+                    {
+                        panelimg.Enabled = false;
+                        panelimgBatch.Enabled = false;
+                        panelvid.Enabled = false;
+                        btnframeCounter.BackColor = Color.Black;
+                        btnframeCounter.FlatStyle = FlatStyle.Flat;
+                        btnframeCounter.BackColor = Color.Transparent;
+                        btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 8, FontStyle.Bold);
+                        btnframeCounter.TextAlign = ContentAlignment.MiddleLeft;
+                        StartCountingLoop(btnframeCounter);
+                        File.Delete($"{vidfileOut}\\{vidoutname}{vidfileExt}");
+                        TimerMulai();
+                        RunVideoProgram();
+                    }
+                    else
+                    {
+                        // User chose not to overwrite, exit the method
+                        return;
+                    }
+
+                }
+                else
+                {
+                    panelimg.Enabled = false;
+                    panelimgBatch.Enabled = false;
+                    panelvid.Enabled = false;
+                    btnframeCounter.BackColor = Color.Black;
+                    btnframeCounter.FlatStyle = FlatStyle.Flat;
+                    btnframeCounter.BackColor = Color.Transparent;
+                    btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 8, FontStyle.Bold);
+                    btnframeCounter.TextAlign = ContentAlignment.MiddleLeft;
+                    StartCountingLoop(btnframeCounter);
+                    File.Delete($"{vidfileOut}\\{vidoutname}{vidfileExt}");
+                    TimerMulai();
+                    RunVideoProgram();
+
+                }
             }
             else
             {
-                RunVideoProgram();
-                
+                MessageBox.Show("File not found, please select a valid video file.", "Error");
+
             }
-            
         }
 
         private async void RunVideoProgram()
@@ -1190,7 +1384,7 @@ namespace Realesrgan
             string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
             string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
             string datasubmit;
-            
+
             if (vidfileExt == ".gif")
             {
                 datasubmit = $"-i {vidfilePath} -f image2 \"{tmpFrame}\\frame%08d.png\"";
@@ -1207,13 +1401,12 @@ namespace Realesrgan
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                Arguments =datasubmit,
+                Arguments = datasubmit,
             };
 
             // 2. UPSCALE: Upscale frames
             string out_frames = Path.Combine(twoLevelsUp, "Realesrgan", "out_frames");
-            string exeFilePath2 = string.Empty;
-            string modelz = string.Empty;
+
             if (radvidS.Checked == true)
             {
                 exeFilePath2 = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
@@ -1240,7 +1433,7 @@ namespace Realesrgan
             string datasubmit69 = $"-i \"{out_frames}\\frame%08d.png\" -vf \"palettegen\" \"{palettePath}\"";
             ProcessStartInfo ps69 = new ProcessStartInfo
             {
-                FileName =exeFilePath,
+                FileName = exeFilePath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -1265,17 +1458,17 @@ namespace Realesrgan
 
             ProcessStartInfo ps3 = new ProcessStartInfo
             {
-                FileName =exeFilePath,
+                FileName = exeFilePath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                Arguments =datasubmit3,
+                Arguments = datasubmit3,
             };
 
             // 4. CLEAR: Clean up temporary files
             string datasubmit4 = $"del /S /q \"{tmpFrame}\" && del /S /q \"{out_frames}\" && del /S /q \"{vidfileOut}\\palette.png\"";
-            
+
             ProcessStartInfo ps4 = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
@@ -1295,7 +1488,10 @@ namespace Realesrgan
 
             //Frame Counter
             string[] files = Directory.GetFiles(tmpFrame);
-            int totalFiles = files.Length;            
+            int totalFiles = files.Length;
+            btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+            btnframeCounter.TextAlign = ContentAlignment.MiddleCenter;
+            StopCountingLoop(btnframeCounter);
             btnframeCounter.Text = totalFiles.ToString();
             txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Total Frames : " + totalFiles.ToString() + Environment.NewLine);
 
@@ -1309,13 +1505,13 @@ namespace Realesrgan
 
             //THUMBNAIL
 
-            if (checkThumb.Checked == true) 
+            if (checkThumb.Checked == true)
             {
-                
+
                 string fileExtension = Path.GetExtension(vidfileExt)?.TrimStart('.');
                 string datasubmit5 = string.Empty;
 
-                
+
                 if (vidfileExt == ".mp4")
                 {
                     datasubmit5 = $" -i \"{vidfileOut}\\{vidoutname}{vidfileExt}\" -i \"{thumbpath}\" -map 0 -map 1 -c copy -disposition:v:1 attached_pic  \"{vidfileOut}\\{vidoutname}-TN{vidfileExt}\"";
@@ -1389,12 +1585,15 @@ namespace Realesrgan
             {
                 File.Delete(destinationPath);
             }
+            TimerStop();
             btnframeCounter.BackColor = Color.Black;
+            btnframeCounter.FlatStyle = FlatStyle.Flat;
             btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
             panelimg.Enabled = true;
+            panelimgBatch.Enabled = true;
             panelvid.Enabled = true;
             PlayCompletionSound();
-            
+
 
             // Log file management
             textBoxContent = txtvidEND.Text;
@@ -1420,7 +1619,7 @@ namespace Realesrgan
 
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string fileName = $"log_{timestamp}.txt";
-            string filePath = Path.Combine(folderPath, fileName);       
+            string filePath = Path.Combine(folderPath, fileName);
             File.WriteAllText(filePath, textBoxContent);
         }
 
@@ -1472,7 +1671,7 @@ namespace Realesrgan
         }
 
         // Method to get the GIF delay
-       
+
 
         private void checkSound_CheckedChanged(object sender, EventArgs e)
         {
@@ -1486,7 +1685,7 @@ namespace Realesrgan
             if (checkimg.Checked == false)
             {
                 label10.Visible = false;
-                pictureBox1.Visible= false;
+                pictureBox1.Visible = false;
                 pictureBox1.Enabled = false;
                 this.Size = new Size(803, 554);
             }
@@ -1581,14 +1780,17 @@ namespace Realesrgan
 
         private void button2_Click(object sender, EventArgs e)
         {
+
+            txtTimer.TextAlign = HorizontalAlignment.Center;
+            txtTimer.Text = "Counter";
+            txtPred.TextAlign = HorizontalAlignment.Center;
+            txtPred.Text = "Estimate";
             btnIMG.FlatStyle = FlatStyle.Flat;
             btnVID.FlatStyle = FlatStyle.Popup;
             btnSingle.FlatStyle = FlatStyle.Flat;
             btnBatch.FlatStyle = FlatStyle.Popup;
-            panel3.BringToFront();
-            panelimg.BringToFront();
-            txtvidEND.BringToFront();
-            button1.BringToFront();
+            GoFront(panel3);
+            GoFront(panelimg);
             if (File.Exists(txtimgPath.Text))
             {
                 //IMAGE PREVIEW
@@ -1621,9 +1823,8 @@ namespace Realesrgan
         {
             btnVID.FlatStyle = FlatStyle.Flat;
             btnIMG.FlatStyle = FlatStyle.Popup;
-            panelvid.BringToFront();
-            txtvidEND.BringToFront();
-            button1.BringToFront();
+            GoFront(panelvid);
+            txtPred.BringToFront();
 
 
             if (vidfileExt == ".gif")
@@ -1662,7 +1863,7 @@ namespace Realesrgan
                 {
                     if (pictureBox1.Image != null)
                     {
-                            pictureBox1.Image.Dispose();
+                        pictureBox1.Image.Dispose();
                         pictureBox1.Image = null;
                     }
                 }
@@ -1681,26 +1882,26 @@ namespace Realesrgan
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-          
+
         }
 
         private async void btnvidThumb_Click(object sender, EventArgs e)
         {
-           
+
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "All files (*.*)|*.*|Image Files|*.jpg;*.jpeg;*.png";
                 ofd.FilterIndex = 2;
                 ofd.RestoreDirectory = true;
-               
+
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    
+
                     thumbpath = ofd.FileName;
                     thumbext = Path.GetExtension(thumbpath);
 
                     //IMAGE PREVIEW
-                   
+
                     if (thumbext == ".jpg" || thumbext == ".png" || thumbext == ".jpeg")
                     {
                         // Handle .gif, .jpg, .png images using the built-in .NET Image class
@@ -1720,7 +1921,7 @@ namespace Realesrgan
                         {
                             panelimg.Enabled = false;
                             panelvid.Enabled = false;
-                            string exeFilePath =Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
+                            string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
                             string fileExtension = Path.GetExtension(vidfileExt)?.TrimStart('.');
                             string datasubmit = string.Empty;
                             if (vidfileExt == ".mp4")
@@ -1734,8 +1935,8 @@ namespace Realesrgan
                                 File.Copy(thumbpath, destinationPath, true);
                                 datasubmit = $" -i {vidfilePath} -c copy -attach \"{destinationPath}\" -metadata:s:t mimetype=image/png  \"{vidfileOut}\\Output-{vidfileName}\"";
                             }
-                            
-                                ProcessStartInfo startInfo = new ProcessStartInfo
+
+                            ProcessStartInfo startInfo = new ProcessStartInfo
                             {
                                 FileName = exeFilePath,
                                 Arguments = datasubmit,
@@ -1745,7 +1946,7 @@ namespace Realesrgan
                                 CreateNoWindow = true
                             };
                             await RunProcessAndCaptureOutput(startInfo, "\nChanging Thumbnail... \n");
-                            if (File.Exists($"{vidfileOut}\\Output-{vidfileName}") && new FileInfo($"{vidfileOut}\\Output-{vidfileName}").Length > 10 * 1024)                        
+                            if (File.Exists($"{vidfileOut}\\Output-{vidfileName}") && new FileInfo($"{vidfileOut}\\Output-{vidfileName}").Length > 10 * 1024)
                             {
                                 txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process completed successfully." + Environment.NewLine);
                                 btnvidOutdir.BackColor = Color.Lime;
@@ -1758,7 +1959,7 @@ namespace Realesrgan
                                 txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process failed, check Log file." + Environment.NewLine);
                                 button1.BackColor = Color.Red;
                             }
-                        
+
                             txtvidEND.SelectionStart = txtvidEND.Text.Length;
                             txtvidEND.ScrollToCaret();
                             if (File.Exists(destinationPath))
@@ -1771,7 +1972,7 @@ namespace Realesrgan
                             btnvidOutdir.ForeColor = Color.Black;
                             PlayCompletionSound();
                             textBoxContent = txtvidEND.Text;
-                            ManageLogFiles();                            
+                            ManageLogFiles();
                         }
                     }
                 }
@@ -1842,6 +2043,7 @@ namespace Realesrgan
         {
             if (radvidS.Checked == true)
             {
+                labelHeavy.ForeColor = Color.Red;
                 radvidX2.Enabled = false;
                 radvidX3.Enabled = false;
                 radvidX4.Checked = true;
@@ -1850,81 +2052,134 @@ namespace Realesrgan
                 vidoutname = Path.GetFileNameWithoutExtension(vidfileName) + "-X" + vidscale + datavid2;
                 txtvidOutname.Text = vidoutname;
             }
+            else
+            {
+                labelHeavy.ForeColor = Color.DimGray;
+            }
         }
 
-        private async void btnframeCounter_Click(object sender, EventArgs e)
+        private void framecounter()
         {
             if (File.Exists(txtvidPath.Text))
 
             {
                 panelimg.Enabled = false;
                 panelvid.Enabled = false;
-                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 10, FontStyle.Bold);
+                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 8, FontStyle.Bold);
+                btnframeCounter.TextAlign = ContentAlignment.MiddleLeft;
                 btnframeCounter.Text = "Counting...";
+                btnframeCounter.BackColor = Color.Black;
+                btnframeCounter.FlatStyle = FlatStyle.Flat;
                 txtvidEND.Text = null;
                 btnframeCounter.BackColor = Color.Transparent;
-                
 
-                // 1. BONGKAR: Extract frames from the video or GIF
-                string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
-                string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
-                string datasubmit;
+                string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffprobe");
 
-                if (vidfileExt == ".gif")
+                int totalFiles = 0;
+                Task.Run(() =>
                 {
-                    datasubmit = $"-i {vidfilePath} -f image2 \"{tmpFrame}\\frame%08d.png\"";
-                }
-                else
-                {
-                    datasubmit = $"-i {vidfilePath} -qscale:v 1 -qmin 1 -qmax 1 -fps_mode cfr -f image2 \"{tmpFrame}\\frame%08d.png\"";
-                }
+                    // Cara paling andal: hitung frame yang benar-benar terbaca
+                    string argsCount = $"-v error -select_streams v:0 -count_frames " +
+                                       $"-show_entries stream=nb_read_frames -of csv=p=0 \"{vidfilePath}\"";
+                    string outCount = ExecProcess(exeFilePath, argsCount).Trim();
 
-                ProcessStartInfo ps = new ProcessStartInfo
-                {
-                    FileName = exeFilePath,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    Arguments = datasubmit,
-                };
-                // 4. CLEAR: Clean up temporary files
-                string datasubmit4 = $"del /S /q \"{tmpFrame}\"";
+                    if (!int.TryParse(outCount, out totalFiles))
+                    {
+                        // Fallback cepat: metadata nb_frames (tidak selalu tersedia)
+                        string argsMeta = $"-v error -select_streams v:0 " +
+                                          $"-show_entries stream=nb_frames -of csv=p=0 \"{vidfilePath}\"";
+                        string outMeta = ExecProcess(exeFilePath, argsMeta).Trim();
+                        int.TryParse(outMeta, out totalFiles);
+                    }
 
-                ProcessStartInfo ps4 = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    Arguments = $"/c {datasubmit4}",
-                };
-                await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
-                await RunProcessAndCaptureOutput(ps, "\nExtracting frames... \n");
-                string[] files = Directory.GetFiles(tmpFrame);
-                int totalFiles = files.Length;
-                await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
-                btnframeCounter.Text = totalFiles.ToString();
-                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Total Frames : "+ totalFiles.ToString() + Environment.NewLine);                
-                panelimg.Enabled = true;
-                panelvid.Enabled = true;
-                btnframeCounter.BackColor = Color.Black;
-                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+                    // Kembalikan ke UI thread untuk memperbarui label
+                    btnframeCounter.BeginInvoke((Action)(() =>
+                    {
+                        StopCountingLoop(btnframeCounter);
+                        btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+                        btnframeCounter.TextAlign = ContentAlignment.MiddleCenter;
+                        btnframeCounter.Text = totalFiles.ToString();
+                        txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Total Frames : " + totalFiles.ToString() + Environment.NewLine);
+                        
+                        framedetector2 = 1;
+                    }));
+                });
+
+
                 // Log file management
                 textBoxContent = txtvidEND.Text;
-                PlayCompletionSound();
+
+
+
                 ManageLogFiles();
+
             }
             else
             {
                 btnframeCounter.Text = "Click";
+                btnframeCounter.BackColor = Color.DimGray;
+                btnframeCounter.FlatStyle = FlatStyle.Standard;
+            }
+        }
+
+        private static string ExecProcess(string fileName, string arguments)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            using (var p = new Process { StartInfo = psi })
+            {
+                p.Start();
+                string stdout = p.StandardOutput.ReadToEnd();
+                string stderr = p.StandardError.ReadToEnd();
+                p.WaitForExit();
+                return string.IsNullOrWhiteSpace(stdout) ? stderr : stdout;
+            }
+        }
+
+        private async void btnframeCounter_Click(object sender, EventArgs e)
+        {
+            if (vidfilePath == string.Empty)
+            {
+                MessageBox.Show("No video selected.");
+                return;
+            }
+            else
+            {
+                StartCountingLoop(btnframeCounter);
+                framecounter();
+                if (framedetector2 == 1)
+                {
+                    panelimg.Enabled = true;
+                    panelvid.Enabled = true;
+                    
+                    framedetector2 = 0;
+                }
+                else
+                {
+                    while (framedetector2 != 1)
+                    {
+                        await Task.Delay(100);
+                    }
+                    panelimg.Enabled = true;
+                    panelvid.Enabled = true;
+                   
+                    framedetector2 = 0;
+                }
+
             }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string url = "https://github.com/eroge69/RealesrganGUI";
+            string url = "https://github.com/unamed666/RealesrganGUI";
             try
             {
                 // Membuka URL di browser default
@@ -1948,20 +2203,21 @@ namespace Realesrgan
 
         private void btnSingle_Click(object sender, EventArgs e)
         {
-            panelimg.BringToFront();
-            txtvidEND.BringToFront();
-            button1.BringToFront();
+            GoFront(panelimg);
             btnSingle.FlatStyle = FlatStyle.Flat;
             btnBatch.FlatStyle = FlatStyle.Popup;
+            txtTimer.TextAlign = HorizontalAlignment.Center;
+            txtTimer.Text = "Counter";
+            txtPred.TextAlign = HorizontalAlignment.Center;
+            txtPred.Text = "Estimate";
         }
 
         private void btnBatch_Click(object sender, EventArgs e)
         {
-            panelimgBatch.BringToFront();
-            txtvidEND.BringToFront();
-            button1.BringToFront();
+            GoFront(panelimgBatch);
             btnSingle.FlatStyle = FlatStyle.Popup;
             btnBatch.FlatStyle = FlatStyle.Flat;
+            txtPred.BringToFront();
         }
 
         private void RadioLinked_CheckedChanged(object sender, EventArgs e)
@@ -1979,5 +2235,554 @@ namespace Realesrgan
             }
         }
 
+        private void GoFront(Control ctrl)
+        {
+            ctrl.BringToFront();
+            txtvidEND.BringToFront();
+            button1.BringToFront();
+            txtTimer.BringToFront();
+        }
+        private async Task TestFrame()
+        {
+            TimeSpan durasi = TimeSpan.Parse(vidlength2);
+            TimeSpan mid = TimeSpan.FromMilliseconds(durasi.TotalMilliseconds / 2);
+
+            // 1. BONGKAR: Extract frames from the video or GIF
+            string exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "ffmpeg", "bin", "ffmpeg");
+            string tmpFrame = Path.Combine(twoLevelsUp, "Realesrgan", "tmp_frames");
+            string datasubmit;
+
+
+            datasubmit = $"-i {vidfilePath} -ss {mid} -frames:v 1 \"{tmpFrame}\\frame%08d.png\"";
+            string out_frames = Path.Combine(twoLevelsUp, "Realesrgan", "out_frames");
+
+            ProcessStartInfo ps = new ProcessStartInfo
+            {
+                FileName = exeFilePath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = datasubmit,
+            };
+
+            // 2. UPSCALE: Upscale frames
+            
+            string modelz = string.Empty;
+            if (radvidS.Checked == true)
+            {
+                exeFilePath2 = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                modelz = "-m";
+            }
+            else
+            {
+                exeFilePath2 = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                modelz = "-n";
+            }
+
+            string datasubmit2 = $"-i \"{tmpFrame}\" -o \"{out_frames}\" {modelz} {datavid} -s {vidscale} -f png";
+            ProcessStartInfo ps2 = new ProcessStartInfo
+            {
+                FileName = exeFilePath2,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = datasubmit2,
+            };
+            // 2.5 GIF Palette
+            palettePath = $"{vidfileOut}\\palette.png";
+            string datasubmit69 = $"-i \"{out_frames}\\frame%08d.png\" -vf \"palettegen\" \"{palettePath}\"";
+            ProcessStartInfo ps69 = new ProcessStartInfo
+            {
+                FileName = exeFilePath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = datasubmit69,
+            };
+
+            // 4. CLEAR: Clean up temporary files
+            string datasubmit4 = $"del /S /q \"{tmpFrame}\" && del /S /q \"{out_frames}\" && del /S /q \"{vidfileOut}\\palette.png\"";
+
+
+            ProcessStartInfo ps4 = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = $"/c {datasubmit4}",
+            };
+
+            // Run processes and capture output in txtvidEND
+            txtvidEND.Text = null;
+
+            await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
+            await RunProcessAndCaptureOutput(ps, "\nExtracting Test Frame... \n");
+            TimerMulai();
+            await RunProcessAndCaptureOutput(ps2, "\nUpscaling frames... \n");
+            TimerStop();
+            if (vidfileExt == ".gif")
+            {
+                await RunProcessAndCaptureOutput(ps69, "\nPaletting GIF... \n");
+            }
+            await RunProcessAndCaptureOutput(ps4, "\nCleaning up temporary files... \n");
+            framedetector = 1;
+        }
+
+        private void prediction()
+        {
+            TimeSpan durasi;
+            if (!TimeSpan.TryParse(txtTimer.Text.Trim(), out durasi))
+            {
+                MessageBox.Show("Format waktu di textbox tidak valid.\nGunakan format hh:mm:ss atau hh:mm:ss.fff");
+                return;
+            }
+
+            TimeSpan mid = TimeSpan.FromMilliseconds(durasi.TotalMilliseconds * durasivideo);
+            TimeSpan mid2;
+            if (string.Equals(datavid2, "-S", StringComparison.OrdinalIgnoreCase))
+            {
+                mid2 = mid;
+            }
+            else if (string.Equals(datavid2, "-N", StringComparison.OrdinalIgnoreCase))
+            {
+                mid2 = TimeSpan.FromTicks((long)Math.Round(mid.Ticks * 0.5));
+            }
+            else
+            {
+                mid2 = TimeSpan.FromTicks((long)Math.Round(mid.Ticks * 0.3));
+            }
+
+
+
+            txtPred.TextAlign = HorizontalAlignment.Left;
+            txtPred.Text = mid2.ToString(@"d\.hh\:mm\:ss\.fff");
+            framedetector3 = 1;
+        }
+
+        private void prediction2()
+        {
+            durasivideo = int.Parse(btnimgcounter.Text.Trim());
+            TimeSpan durasi;
+            if (!TimeSpan.TryParse(txtTimer.Text.Trim(), out durasi))
+            {
+                MessageBox.Show("Format waktu di textbox tidak valid.\nGunakan format hh:mm:ss atau hh:mm:ss.fff");
+                return;
+            }
+
+            TimeSpan mid = TimeSpan.FromMilliseconds(durasi.TotalMilliseconds * durasivideo * 4);
+            TimeSpan mid2;
+            if (string.Equals(datavid2, "-S", StringComparison.OrdinalIgnoreCase))
+            {
+                mid2 = mid;
+            }
+            else if (string.Equals(datavid2, "-N", StringComparison.OrdinalIgnoreCase))
+            {
+                mid2 = TimeSpan.FromTicks((long)Math.Round(mid.Ticks * 0.5));
+            }
+            else
+            {
+                mid2 = TimeSpan.FromTicks((long)Math.Round(mid.Ticks * 0.3));
+            }
+
+
+
+            txtPred.TextAlign = HorizontalAlignment.Left;
+            txtPred.Text = mid2.ToString(@"d\.hh\:mm\:ss\.fff");
+        }
+
+        private async Task CekFrameDetector()
+        {
+            if (framedetector == 1)
+            {
+                framecounter();
+                framedetector = 0;
+            }
+            else
+            {
+                while (framedetector != 1)
+                {
+                    await Task.Delay(100);
+                }
+                framecounter();
+                framedetector = 0;
+            }
+        }
+        private async Task CekFrameDetector2()
+        {
+            if (framedetector2 == 1)
+            {
+                durasivideo = int.Parse(btnframeCounter.Text.Trim());
+                prediction();
+                StopCountingLoop(txtPred);
+                framedetector2 = 0;
+            }
+            else
+            {
+                while (framedetector2 != 1)
+                {
+                    await Task.Delay(100);
+                }
+                durasivideo = int.Parse(btnframeCounter.Text.Trim());
+                prediction();
+                StopCountingLoop(txtPred);
+                framedetector2 = 0;
+            }
+        }
+        private async Task CekFrameDetector3()
+        {
+            if (framedetector3 == 1)
+            {
+                framedetector3 = 0;
+                panelimg.Enabled = true;
+                panelvid.Enabled = true;
+                btnframeCounter.BackColor = Color.Black;
+                btnframeCounter.FlatStyle = FlatStyle.Flat;
+                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Estimated." + Environment.NewLine);
+            }
+            else
+            {
+                while (framedetector3 != 1)
+                {
+                    await Task.Delay(100);
+                }
+                framedetector3 = 0;
+                PlayCompletionSound();
+                panelimg.Enabled = true;
+                panelimgBatch.Enabled = true;
+                panelvid.Enabled = true;
+                btnframeCounter.BackColor = Color.Black;
+                btnframeCounter.FlatStyle = FlatStyle.Flat;
+                btnframeCounter.Font = new Font(btnframeCounter.Font.FontFamily, 14, FontStyle.Bold);
+                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Estimated." + Environment.NewLine);
+            }
+        }
+        private async void btnEsTestvid_Click(object sender, EventArgs e)
+        {
+            if (vidfilePath == string.Empty)
+            {
+                MessageBox.Show("No video selected.");
+                return;
+            }
+            else
+            {
+                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Estimating....." + Environment.NewLine);
+                panelimg.Enabled = false;
+                panelimgBatch.Enabled = false;
+                panelvid.Enabled = false;
+                txtPred.TextAlign = HorizontalAlignment.Left;                
+                StartCountingLoop(txtPred);
+                try
+                {
+                    // testframe
+                    await TestFrame();
+                    // framecounter
+                    await CekFrameDetector();
+                    // prediction
+                    await CekFrameDetector2();
+                    // finish
+                    await CekFrameDetector3();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+            }
+        }
+        private void HitungGambar()
+        {
+            // Set ekstensi diperbolehkan (case-insensitive), lokal pada metode
+            var allowedExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { ".jpg", ".jpeg", ".png", ".webp" };
+
+            string root = imgdirPath; // atau: string root = C.Text;
+            if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root))
+            {
+                btnimgcounter.Text = "0";
+                return;
+            }
+
+            long total = 0;
+            var stack = new Stack<string>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                string dir = stack.Pop();
+                try
+                {
+                    foreach (var sub in Directory.EnumerateDirectories(dir))
+                    {
+                        if (string.Equals(Path.GetFileName(sub), "UPSCALED",
+                                          StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        stack.Push(sub);
+                    }
+
+                    foreach (var file in Directory.EnumerateFiles(dir))
+                    {
+                        if (allowedExt.Contains(Path.GetExtension(file)))
+                            total++;
+                    }
+                }
+                catch (UnauthorizedAccessException) { }
+                catch (PathTooLongException) { }
+                catch (IOException) { }
+            }
+
+            btnimgcounter.Text = total.ToString();
+        }
+        private void PilihGambarTerbesar()
+        {
+            string root = imgdirPath; // Data C
+            if (string.IsNullOrWhiteSpace(root) || !Directory.Exists(root))
+            {
+                return;
+            }
+
+            // Jalankan di background agar UI tidak freeze
+            Task.Run(() =>
+            {
+                var allowedExt = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                { ".jpg", ".jpeg", ".png", ".webp" };
+
+                long biggestSize = -1;
+
+                var stack = new Stack<string>();
+                stack.Push(root);
+
+                while (stack.Count > 0)
+                {
+                    string dir = stack.Pop();
+                    try
+                    {
+                        // Telusuri subfolder, kecuali "UPSCALED"
+                        foreach (var sub in Directory.EnumerateDirectories(dir))
+                        {
+                            if (!string.Equals(Path.GetFileName(sub), "UPSCALED",
+                                               StringComparison.OrdinalIgnoreCase))
+                            {
+                                stack.Push(sub);
+                            }
+                        }
+
+                        // Periksa file gambar di folder saat ini
+                        foreach (var file in Directory.EnumerateFiles(dir))
+                        {
+                            if (!allowedExt.Contains(Path.GetExtension(file))) continue;
+
+                            long size;
+                            try { size = new FileInfo(file).Length; }
+                            catch { continue; } // lewati jika tidak dapat diakses
+
+                            if (size > biggestSize)
+                            {
+                                biggestSize = size;
+                                largestimg = file;
+                            }
+                        }
+                    }
+                    catch (UnauthorizedAccessException) { /* lewati */ }
+                    catch (PathTooLongException) { /* lewati */ }
+                    catch (IOException) { /* lewati */ }
+                }
+
+                // Kembali ke UI thread untuk menulis hasil ke Data B
+
+            });
+        }
+
+        private async void btnEsTestbatch_Click(object sender, EventArgs e)
+        {
+            if (imgdirPath == string.Empty)
+            {
+                MessageBox.Show("No folder selected.");
+                return;
+            }
+            else
+            {
+                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Estimating....." + Environment.NewLine);
+                txtPred.TextAlign = HorizontalAlignment.Left;
+                StartCountingLoop(txtPred);
+                PilihGambarTerbesar();
+                await Task.Delay(100);
+                imgfileExt = Path.GetExtension(largestimg);
+                txtvidEND.AppendText(Environment.NewLine + largestimg + Environment.NewLine);
+
+
+                // RealRS 
+                if (radimgS.Checked == true)
+                {
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realsr", "realsr-ncnn-vulkan.exe");
+                    modelz = " -m ";
+                }
+                // Real-Esrgan
+                else
+                {
+                    exeFilePath = Path.Combine(twoLevelsUp, "Realesrgan", "realesrgan-ncnn-vulkan.exe");
+                    modelz = " -n ";
+                }
+                string datasubmit = " -i " + '\u0022' + largestimg + '\u0022' + modelz + dataimg
+                   + " -s " + imgscale + " -o " + '\u0022' + imgfileOut + "\\" + imgoutname + imgfileExt + '\u0022';
+                ProcessStartInfo ps = new ProcessStartInfo
+                {
+                    FileName = exeFilePath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    Arguments = datasubmit
+                };
+
+                using (Process process = new Process())
+                {
+                    process.StartInfo = ps;
+                    TimerMulai();
+
+                    try
+                    {
+                        process.Start();
+
+                        // Begin reading output and error asynchronously
+                        process.OutputDataReceived += (outputSender, outputEvent) =>
+                        {
+                            if (!string.IsNullOrEmpty(outputEvent.Data))
+                            {
+                                // Use Invoke to update the TextBox safely from another thread
+                                txtvidEND.Invoke((MethodInvoker)delegate
+                                {
+                                    TimerStop();
+                                    txtvidEND.AppendText(outputEvent.Data + Environment.NewLine);
+                                    txtvidEND.SelectionStart = txtvidEND.Text.Length;
+                                    txtvidEND.ScrollToCaret();
+                                });
+                            }
+                        };
+
+                        process.ErrorDataReceived += (errorSender, errorEvent) =>
+                        {
+                            if (!string.IsNullOrEmpty(errorEvent.Data))
+                            {
+                                // Use Invoke to update the TextBox safely from another thread
+                                txtvidEND.Invoke((MethodInvoker)delegate
+                                {
+                                    txtvidEND.AppendText(errorEvent.Data + Environment.NewLine);
+                                    txtvidEND.SelectionStart = txtvidEND.Text.Length;
+                                    txtvidEND.ScrollToCaret();
+                                });
+                            }
+                        };
+
+
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+
+                        await Task.Run(() => process.WaitForExit());  // Run WaitForExit on a background thread
+                        string lagestout = $"{imgfileOut}\\{imgoutname}{imgfileExt}";
+                        TimerStop();
+
+
+                        txtvidEND.Invoke((MethodInvoker)delegate
+                        {
+                            if (File.Exists($"{imgfileOut}\\{imgoutname}{imgfileExt}"))
+                            {
+                                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Estimated." + Environment.NewLine);
+
+                                try
+                                {
+                                    // Hilangkan atribut read-only jika ada
+                                    var attr = File.GetAttributes(lagestout);
+                                    if ((attr & FileAttributes.ReadOnly) != 0)
+                                        File.SetAttributes(lagestout, attr & ~FileAttributes.ReadOnly);
+
+                                    File.Delete(lagestout); // hapus permanen (bukan ke Recycle Bin)
+
+
+                                }
+                                catch (UnauthorizedAccessException ex)
+                                {
+                                    txtvidEND.AppendText($"\nTidak memiliki izin untuk menghapus file.\n{lagestout}\nDetail: {ex.Message}\n");
+                                }
+                                catch (IOException ex)
+                                {
+                                    txtvidEND.AppendText($"\nGagal menghapus. File mungkin sedang dipakai aplikasi lain.\n{lagestout}\n{lagestout}\nDetail: {ex.Message}\n");
+                                }
+                                catch (Exception ex)
+                                {
+                                    txtvidEND.AppendText($"\nTerjadi kesalahan.\n{lagestout}\n{lagestout}\nDetail: {ex.Message}\n");
+                                }
+                            }
+                            else
+                            {
+                                txtvidEND.AppendText(Environment.NewLine + Environment.NewLine + " Process failed, check Log file." + Environment.NewLine);
+
+                            }
+                            StopCountingLoop(txtPred);
+                            prediction2();
+                            txtvidEND.SelectionStart = txtvidEND.Text.Length;
+                            txtvidEND.ScrollToCaret();
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        txtvidEND.Invoke((MethodInvoker)delegate
+                        {
+                            txtvidEND.Text = $"Error: {ex.Message}";
+                        });
+                    }
+                }
+            }
+        }
+        private static void StartCountingLoop(Control target)
+        {
+            StopCountingLoop(target); // hentikan loop lama pada kontrol yang sama
+
+            var cts = new CancellationTokenSource();
+            target.Tag = cts; // simpan CTS pada Tag
+
+            int state = 0;
+
+            Task.Run(async () =>
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    string text;
+                    switch (state)
+                    {
+                        case 0: text = "counting."; break;
+                        case 1: text = "counting.."; break;
+                        case 2: text = "counting..."; break;
+                        case 3: text = "counting...."; break;
+                        default: text = "counting....."; break;
+                    }
+                    state = (state + 1) % 5;
+
+                    if (target != null && !target.IsDisposed && target.IsHandleCreated)
+                        target.BeginInvoke((Action)(() => target.Text = text));
+
+                    try { await Task.Delay(500, cts.Token); }
+                    catch (TaskCanceledException) { break; }
+                }
+            }, cts.Token);
+        }
+
+        private static void StopCountingLoop(Control target)
+        {
+            if (target == null) return;
+            var cts = target.Tag as CancellationTokenSource;
+            if (cts != null)
+            {
+                cts.Cancel();
+                cts.Dispose();
+                target.Tag = null;
+            }
+        }
     }
 }
