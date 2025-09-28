@@ -53,7 +53,7 @@ FFmpeg [HERE](https://github.com/BtbN/FFmpeg-Builds)
 - Notification sound and button color if the file created or failed
 - CMD menu to see the process
 - Create Log file everytime it run to know how it work if something goes wrong (max 10 log)
-- You can change notif sound in RealesrganGUI\Realesrgan\ **completion_sound.wav**
+- You can change notif sound in RealesrganGUI\ **completion_sound.wav**
 <br><br><br>
 > Visual Studio 2022 - Windows Form is used to make this program
 
